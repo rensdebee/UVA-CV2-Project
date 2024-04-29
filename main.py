@@ -4,6 +4,8 @@ import time
 import tqdm
 import numpy as np
 import dearpygui.dearpygui as dpg
+import wandb
+from datetime import datetime
 
 import torch
 import torch.nn.functional as F
@@ -144,6 +146,11 @@ class GUI:
                 from guidance.imagedream_utils import ImageDream
                 self.guidance_sd = ImageDream(self.device)
                 print(f"[INFO] loaded ImageDream!")
+            elif self.opt.ISM:
+                print(f"[INFO] loading ISM SD...")
+                from guidance.sd_utils_copy import StableDiffusion
+                self.guidance_sd = StableDiffusion(self.device, None, None, guidance_opt=self.opt)
+                print(f"[INFO] loaded ISM SD!")
             else:
                 print(f"[INFO] loading SD...")
                 from guidance.sd_utils import StableDiffusion
@@ -263,8 +270,10 @@ class GUI:
             if self.enable_sd:
                 if self.opt.mvdream or self.opt.imagedream:
                     loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, poses, step_ratio=step_ratio if self.opt.anneal_timestep else None)
+                elif self.opt.ISM:
+                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, iteration=self.step)
                 else:
-                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio=step_ratio if self.opt.anneal_timestep else None)
+                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio=step_ratio if self.opt.anneal_timestep else None, iteration=self.step)
 
             if self.enable_zero123:
                 loss = loss + self.opt.lambda_zero123 * self.guidance_zero123.train_step(images, vers, hors, radii, step_ratio=step_ratio if self.opt.anneal_timestep else None, default_elevation=self.opt.elevation)
@@ -536,6 +545,12 @@ class GUI:
 
             mesh.albedo = torch.from_numpy(albedo).to(self.device)
             mesh.write(path)
+
+            wandb.log(
+                    {
+                        "generated_samples": wandb.Object3D(open(path))
+        
+                    })
 
         else:
             path = os.path.join(self.opt.outdir, self.opt.save_path + '_model.ply')
@@ -910,7 +925,18 @@ if __name__ == "__main__":
     opt = OmegaConf.merge(OmegaConf.load(args.config), OmegaConf.from_cli(extras))
 
     gui = GUI(opt)
-
+    
+    os.environ['WANDB_TIMEOUT'] = '120'
+    now = datetime.now() # current date and time
+    date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
+    # start a new wandb run to track this script
+    wandb.init(
+        # set the wandb project where this run will be logged
+        project="DreamGaussian-ISM",
+        name = opt.prompt+ "_"+str(opt.ISM) + "_"+str(date_time),
+        # track hyperparameters and run metadata
+        config=dict(opt)
+    )
     if opt.gui:
         gui.render()
     else:
