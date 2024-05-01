@@ -5,6 +5,7 @@ input:
 prompt:
 negative_prompt: 'unrealistic, blurry, low quality, out of focus, ugly, low contrast, dull, low-resolution, oversaturation.'
 inverse_text: ''
+point_e: "icecream"
 # input mesh for stage 2 (auto-search from stage 1 output path if None)
 mesh:
 # estimated elevation angle for input image 

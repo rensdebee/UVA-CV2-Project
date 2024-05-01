@@ -79,7 +79,7 @@ class GUI:
             self.renderer.initialize(self.opt.load)            
         else:
             # initialize gaussians to a blob
-            self.renderer.initialize(num_pts=self.opt.num_pts)
+            self.renderer.initialize(num_pts=self.opt.num_pts, input=self.opt.point_e)
 
         if self.gui:
             dpg.create_context()
