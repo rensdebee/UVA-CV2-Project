@@ -690,7 +690,7 @@ class Renderer:
     
     def initialize(self, input=None, num_pts=5000, radius=0.5):
         # load checkpoint
-        if input is None:
+        if not input:
             # init from random point cloud
             
             phis = np.random.random((num_pts,)) * 2 * np.pi
@@ -712,7 +712,7 @@ class Renderer:
         elif isinstance(input, BasicPointCloud):
             # load from a provided pcd
             self.gaussians.create_from_pcd(input, 1)
-        if isinstance(input, str):
+        elif isinstance(input, str):
             shs = np.random.random((num_pts, 3)) / 255.0
             xyz,rgb = init_from_pointe(input)
             xyz[:,1] = - xyz[:,1]
