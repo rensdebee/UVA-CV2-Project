@@ -3,8 +3,10 @@
 input: 
 # input text prompt (default to None, can be input in GUI too)
 prompt:
-negative_prompt:
+negative_prompt: 'unrealistic, blurry, low quality, out of focus, ugly, low contrast, dull, low-resolution, oversaturation.'
 inverse_text: ''
+
+
 # input mesh for stage 2 (auto-search from stage 1 output path if None)
 mesh:
 # estimated elevation angle for input image 
@@ -27,7 +29,9 @@ imagedream: False
 # use stable-zero123 instead of zero123-xl
 stable_zero123: False 
 # use ISM loss
-ISM: False 
+ISM: False
+
+#ISM settings
 seed: 42
 warmup_iter: 1500
 xs_delta_t: 200
@@ -37,6 +41,8 @@ delta_t: 25
 delta_t_start: 100
 denoise_guidance_scale: 1.0
 guidance_scale: 7.5
+lambda_guidance: 0.1
+
 # guidance loss weights (0 to disable)
 lambda_sd: 1
 lambda_zero123: 0
@@ -66,13 +72,14 @@ train_geo: False
 invert_bg_prob: 0.5
 
 ### GUI
-gui: True
+gui: False
 force_cuda_rast: False
 # GUI resolution
 H: 800
 W: 800
 
 ### Gaussian splatting
+point_e: False
 num_pts: 5000
 sh_degree: 0
 position_lr_init: 0.001
