@@ -72,15 +72,15 @@ train_geo: False
 invert_bg_prob: 0.5
 
 ### GUI
-gui: False
+gui: True
 force_cuda_rast: False
 # GUI resolution
 H: 800
 W: 800
 
 ### Gaussian splatting
-point_e: "icecream"
-num_pts: 20
+point_e: "an icecream"
+num_pts: 10
 sh_degree: 0
 position_lr_init: 0.001
 position_lr_final: 0.00002

@@ -297,7 +297,7 @@ class StableDiffusion(nn.Module):
 
         grad = torch.nan_to_num(self.guidance_opt.lambda_guidance * grad)
         loss = SpecifyGradient.apply(latents, grad)
-        if iteration % 100 == 0:
+        if iteration % 100 == 0 or iteration == 1:
             noise_pred_post = noise_pred_uncond + 7.5* delta_DSD    
             lat2rgb = lambda x: torch.clip((x.permute(0,2,3,1) @ self.rgb_latent_factors.to(x.dtype)).permute(0,3,1,2), 0., 1.)
             with torch.no_grad():

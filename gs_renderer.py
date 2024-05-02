@@ -712,14 +712,17 @@ class Renderer:
         elif isinstance(input, BasicPointCloud):
             # load from a provided pcd
             self.gaussians.create_from_pcd(input, 1)
-        elif isinstance(input, str):
+        elif isinstance(input, str):           
             xyz,rgb = init_from_pointe(input)
-            xyz[:,1] = - xyz[:,1]
-            xyz[:,2] = xyz[:,2] + 0.15
+
+            x, y, z = np.split(xyz, 3, axis=-1)
+            xyz = np.stack([x, z, -y], axis=-1)
+
             thetas = np.random.rand(num_pts)*np.pi
             phis = np.random.rand(num_pts)*2*np.pi        
             radius = np.random.rand(num_pts)*0.05
             # We create random points inside the bounds of sphere
+
             xyz_ball = np.stack([
                 radius * np.sin(thetas) * np.sin(phis),
                 radius * np.sin(thetas) * np.cos(phis),
@@ -730,6 +733,7 @@ class Renderer:
             xyz = (np.expand_dims(xyz,axis=1)+np.expand_dims(xyz_ball,axis=0)).reshape(-1,3)
             xyz = xyz * 1.
             num_pts = xyz.shape[0]
+
             shs = np.random.random((num_pts, 3)) / 255.0
             pcd = BasicPointCloud(points=xyz, colors=SH2RGB(shs), normals=np.zeros((num_pts, 3)))
             self.gaussians.create_from_pcd(pcd, 10)
