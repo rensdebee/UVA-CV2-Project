@@ -35,3 +35,7 @@ rembg[gpu,cli]
 
 # gradio demo
 gradio
+
+# Shape E
+ipywidgets
+blobfile
