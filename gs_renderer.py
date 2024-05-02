@@ -713,7 +713,6 @@ class Renderer:
             # load from a provided pcd
             self.gaussians.create_from_pcd(input, 1)
         elif isinstance(input, str):
-            shs = np.random.random((num_pts, 3)) / 255.0
             xyz,rgb = init_from_pointe(input)
             xyz[:,1] = - xyz[:,1]
             xyz[:,2] = xyz[:,2] + 0.15
@@ -731,6 +730,7 @@ class Renderer:
             xyz = (np.expand_dims(xyz,axis=1)+np.expand_dims(xyz_ball,axis=0)).reshape(-1,3)
             xyz = xyz * 1.
             num_pts = xyz.shape[0]
+            shs = np.random.random((num_pts, 3)) / 255.0
             pcd = BasicPointCloud(points=xyz, colors=SH2RGB(shs), normals=np.zeros((num_pts, 3)))
             self.gaussians.create_from_pcd(pcd, 10)
         else:
@@ -762,21 +762,21 @@ class Renderer:
             pass
             
         #Aug
-        sh_deg_aug_ratio = 0.1
-        bg_aug_ratio = 0.3
-        shs_aug_ratio=1.0
-        scale_aug_ratio=1.0
-        test = False
-        if random.random() < sh_deg_aug_ratio and not test:
-            act_SH = 0
-        else:
-            act_SH = self.gaussians.active_sh_degree
+        # sh_deg_aug_ratio = 0.1
+        # bg_aug_ratio = 0.3
+        # shs_aug_ratio=1.0
+        # scale_aug_ratio=1.0
+        # test = False
+        # if random.random() < sh_deg_aug_ratio and not test:
+        #     act_SH = 0
+        # else:
+        #     act_SH = self.gaussians.active_sh_degree
 
-        if random.random() < bg_aug_ratio and not test:
-            if random.random() < 0.5:
-                bg_color = torch.rand_like(bg_color)
-            else:
-                bg_color = torch.zeros_like(bg_color)
+        # if random.random() < bg_aug_ratio and not test:
+        #     if random.random() < 0.5:
+        #         bg_color = torch.rand_like(bg_color)
+        #     else:
+        #         bg_color = torch.zeros_like(bg_color)
         # bg_color = torch.zeros_like(bg_color)
 
         # Set up rasterization configuration
@@ -795,7 +795,7 @@ class Renderer:
             sh_degree=self.gaussians.active_sh_degree,
             campos=viewpoint_camera.camera_center,
             prefiltered=False,
-            # debug=False,
+            debug=False,
         )
 
         rasterizer = GaussianRasterizer(raster_settings=raster_settings)
@@ -837,45 +837,45 @@ class Renderer:
         else:
             colors_precomp = override_color
 
-        # # DG RASTERIZER
+        # DG RASTERIZER
         # Rasterize visible Gaussians to image, obtain their radii (on screen).
-        # rendered_image, radii, rendered_depth, rendered_alpha = rasterizer(
-        #     means3D=means3D,
-        #     means2D=means2D,
-        #     shs=shs,
-        #     colors_precomp=colors_precomp,
-        #     opacities=opacity,
-        #     scales=scales,
-        #     rotations=rotations,
-        #     cov3D_precomp=cov3D_precomp,
-        # )
+        rendered_image, radii, rendered_depth, rendered_alpha = rasterizer(
+            means3D=means3D,
+            means2D=means2D,
+            shs=shs,
+            colors_precomp=colors_precomp,
+            opacities=opacity,
+            scales=scales,
+            rotations=rotations,
+            cov3D_precomp=cov3D_precomp,
+        )
 
-        # rendered_image = rendered_image.clamp(0, 1)
-        # # DG RASTERIZER
+        rendered_image = rendered_image.clamp(0, 1)
+        # DG RASTERIZER
 
-        # LD RASTERIZER
-        rendered_image, radii, depth_alpha = rasterizer(
-        means3D = means3D,
-        means2D = means2D,
-        shs = shs,
-        colors_precomp = colors_precomp,
-        opacities = opacity,
-        scales = scales,
-        rotations = rotations,
-        cov3D_precomp = cov3D_precomp)
-        depth, alpha = torch.chunk(depth_alpha, 2)
-        focal = 1 / (2 * math.tan(viewpoint_camera.FoVx / 2))  
-        disp = focal / (depth + (alpha * 10) + 1e-5)
+        # # LD RASTERIZER
+        # rendered_image, radii, depth_alpha = rasterizer(
+        # means3D = means3D,
+        # means2D = means2D,
+        # shs = shs,
+        # colors_precomp = colors_precomp,
+        # opacities = opacity,
+        # scales = scales,
+        # rotations = rotations,
+        # cov3D_precomp = cov3D_precomp)
+        # depth, alpha = torch.chunk(depth_alpha, 2)
+        # focal = 1 / (2 * math.tan(viewpoint_camera.FoVx / 2))  
+        # disp = focal / (depth + (alpha * 10) + 1e-5)
 
-        try:
-            min_d = disp[alpha <= 0.1].min()
-        except Exception:
-            min_d = disp.min()
+        # try:
+        #     min_d = disp[alpha <= 0.1].min()
+        # except Exception:
+        #     min_d = disp.min()
 
-        disp = torch.clamp((disp - min_d) / (disp.max() - min_d), 0.0, 1.0)
-        rendered_depth = disp
-        rendered_alpha = alpha
-        # LD RASTERIZER
+        # disp = torch.clamp((disp - min_d) / (disp.max() - min_d), 0.0, 1.0)
+        # rendered_depth = disp
+        # rendered_alpha = alpha
+        # # LD RASTERIZER
 
         # Those Gaussians that were frustum culled or had a radius of 0 were not visible.
         # They will be excluded from value updates used in the splitting criteria.

@@ -148,7 +148,7 @@ class GUI:
                 print(f"[INFO] loaded ImageDream!")
             elif self.opt.ISM:
                 print(f"[INFO] loading ISM SD...")
-                from guidance.sd_utils_copy import StableDiffusion
+                from guidance.sd_ISM_utils import StableDiffusion
                 self.guidance_sd = StableDiffusion(self.device, None, None, guidance_opt=self.opt)
                 print(f"[INFO] loaded ISM SD!")
             else:
