@@ -17,7 +17,7 @@ ref_size: 256
 density_thresh: 1
 
 ### Output
-outdir: logs
+outdir: logs/baseline_ism
 mesh_format: obj
 save_path: ???
 
@@ -37,7 +37,7 @@ warmup_iter: 1500
 xs_delta_t: 200
 xs_inv_steps: 5
 xs_eta: 0.0
-delta_t: 25
+delta_t: 50
 delta_t_start: 100
 denoise_guidance_scale: 1.0
 guidance_scale: 7.5
@@ -79,8 +79,8 @@ H: 800
 W: 800
 
 ### Gaussian splatting
-point_e: "SHAPE_an icecream"
-num_pts: 10
+point_e: false
+num_pts: 5000
 sh_degree: 0
 position_lr_init: 0.001
 position_lr_final: 0.00002
