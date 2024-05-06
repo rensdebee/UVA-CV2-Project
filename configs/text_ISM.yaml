@@ -29,7 +29,7 @@ imagedream: False
 # use stable-zero123 instead of zero123-xl
 stable_zero123: False 
 # use ISM loss
-ISM: False
+ISM: True
 
 #ISM settings
 seed: 42
@@ -79,8 +79,8 @@ H: 800
 W: 800
 
 ### Gaussian splatting
-point_e: False
-num_pts: 5000
+point_e: "SHAPE_an icecream"
+num_pts: 10
 sh_degree: 0
 position_lr_init: 0.001
 position_lr_final: 0.00002

@@ -18,3 +18,7 @@ logs*
 videos*
 images*
 *.mp4
+
+wandb/
+point_e_model_cache/
+shap_e_model_cache/

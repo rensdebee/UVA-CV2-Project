@@ -4,6 +4,7 @@ from diffusers import (
 )
 from diffusers.utils.import_utils import is_xformers_available
 
+import wandb
 
 import numpy as np
 import torch
@@ -142,6 +143,7 @@ class StableDiffusion(nn.Module):
         guidance_scale=100,
         as_latent=False,
         vers=None, hors=None,
+        iteration=0,
     ):
         
         batch_size = pred_rgb.shape[0]
@@ -203,7 +205,9 @@ class StableDiffusion(nn.Module):
 
         target = (latents - grad).detach()
         loss = 0.5 * F.mse_loss(latents.float(), target, reduction='sum') / latents.shape[0]
-
+        if iteration % 100 == 0:
+            wandb.log({"examples": wandb.Image(pred_rgb_512)}) 
+        wandb.log({"loss": loss})
         return loss
 
     @torch.no_grad()
