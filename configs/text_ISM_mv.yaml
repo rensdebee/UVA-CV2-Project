@@ -4,6 +4,8 @@ input:
 # input text prompt (default to None, can be input in GUI too)
 prompt:
 negative_prompt: "ugly, bad anatomy, blurry, pixelated obscure, unnatural colors, poor lighting, dull, and unclear, cropped, lowres, low quality, artifacts, duplicate, morbid, mutilated, poorly drawn face, deformed, dehydrated, bad proportions"
+inverse_text: ''
+
 # input mesh for stage 2 (auto-search from stage 1 output path if None)
 mesh:
 # estimated elevation angle for input image 
@@ -14,7 +16,7 @@ ref_size: 256
 density_thresh: 1
 
 ### Output
-outdir: logs/baseline_mvdream
+outdir: logs/.test
 mesh_format: obj
 save_path: ???
 
@@ -78,7 +80,10 @@ H: 800
 W: 800
 
 ### Gaussian splatting
+## for point_e / shap_e use:
+#point_e: "SHAPE_an icecream" || point_e: False
 point_e: False
+# for point_e / shap_e -> num_pts: 10 || for default num_pts: 5000
 num_pts: 5000
 sh_degree: 0
 position_lr_init: 0.001

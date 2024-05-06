@@ -44,13 +44,20 @@ class StableDiffusion(nn.Module):
         vram_O=False,
         sd_version="2.1",
         hf_key=None,
-        t_range=[0.02, 0.98],
+        t_range=[0.02, 0.5],
+        max_t_range=0.98,
         guidance_opt=None
     ):
         super().__init__()
-        self.guidance_opt=guidance_opt
+        self.guidance_opt = guidance_opt
         self.device = device
         self.sd_version = sd_version
+
+        if guidance_opt.t_range is not None:
+            t_range = guidance_opt.t_range
+
+        if guidance_opt.max_t_range is not None:
+            max_t_range = guidance_opt.max_t_range
 
         if hf_key is not None:
             print(f"[INFO] using hugging face custom model key: {hf_key}")
@@ -95,7 +102,6 @@ class StableDiffusion(nn.Module):
 
         self.num_train_timesteps = self.scheduler.config.num_train_timesteps
         self.scheduler.set_timesteps(self.num_train_timesteps, device=device)
-        max_t_range = max(t_range)
         self.timesteps = torch.flip(self.scheduler.timesteps, dims=(0, ))
         self.min_step = int(self.num_train_timesteps * t_range[0])
         self.max_step = int(self.num_train_timesteps * t_range[1])
@@ -253,7 +259,7 @@ class StableDiffusion(nn.Module):
             # add noise
             noise = torch.randn((latents.shape[0], 4, resolution[0] // 8, resolution[1] // 8, ), dtype=latents.dtype, device=latents.device, generator=self.noise_gen) + 0.1 * torch.randn((1, 4, 1, 1), device=latents.device).repeat(latents.shape[0], 1, 1, 1)
             warm_up_rate = 1. - min(iteration/self.guidance_opt.warmup_iter,1.)
-            current_delta_t =  current_delta_t =  int(self.guidance_opt.delta_t + (warm_up_rate)*(self.guidance_opt.delta_t_start - self.guidance_opt.delta_t))
+            current_delta_t =  int(self.guidance_opt.delta_t + (warm_up_rate)*(self.guidance_opt.delta_t_start - self.guidance_opt.delta_t))
 
             ind_t = torch.randint(self.min_step, self.max_step + int(self.warmup_step*warm_up_rate), (1, ), dtype=torch.long, generator=self.noise_gen, device=self.device)[0]
             ind_prev_t = max(ind_t - current_delta_t, torch.ones_like(ind_t) * 0)

@@ -17,7 +17,7 @@ ref_size: 256
 density_thresh: 1
 
 ### Output
-outdir: logs
+outdir: logs/baseline
 mesh_format: obj
 save_path: ???
 
@@ -42,6 +42,8 @@ delta_t_start: 100
 denoise_guidance_scale: 1.0
 guidance_scale: 7.5
 lambda_guidance: 0.1
+t_range: [0.02, 0.5]
+max_t_range: 0.98
 
 # guidance loss weights (0 to disable)
 lambda_sd: 1
@@ -79,7 +81,10 @@ H: 800
 W: 800
 
 ### Gaussian splatting
+## for point_e / shap_e use:
+#point_e: "SHAPE_an icecream" || point_e: False
 point_e: False
+# for point_e / shap_e -> num_pts: 10 || for default num_pts: 5000
 num_pts: 5000
 sh_degree: 0
 position_lr_init: 0.001
