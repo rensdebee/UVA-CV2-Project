@@ -1,83 +1,28 @@
-Collecting wandb
-  Downloading wandb-0.16.6-py3-none-any.whl.metadata (10 kB)
-Requirement already satisfied: Click!=8.0.0,>=7.1 in ./my_env/lib/python3.10/site-packages (from wandb) (8.1.7)
-Collecting GitPython!=3.1.29,>=1.0.0 (from wandb)
-  Downloading GitPython-3.1.43-py3-none-any.whl.metadata (13 kB)
-Requirement already satisfied: requests<3,>=2.0.0 in ./my_env/lib/python3.10/site-packages (from wandb) (2.31.0)
-Requirement already satisfied: psutil>=5.0.0 in ./my_env/lib/python3.10/site-packages (from wandb) (5.9.8)
-Collecting sentry-sdk>=1.0.0 (from wandb)
-  Downloading sentry_sdk-2.1.1-py2.py3-none-any.whl.metadata (10 kB)
-Collecting docker-pycreds>=0.4.0 (from wandb)
-  Downloading docker_pycreds-0.4.0-py2.py3-none-any.whl.metadata (1.8 kB)
-Requirement already satisfied: PyYAML in ./my_env/lib/python3.10/site-packages (from wandb) (6.0.1)
-Collecting setproctitle (from wandb)
-  Downloading setproctitle-1.3.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.9 kB)
-Requirement already satisfied: setuptools in ./my_env/lib/python3.10/site-packages (from wandb) (69.2.0)
-Collecting appdirs>=1.4.3 (from wandb)
-  Downloading appdirs-1.4.4-py2.py3-none-any.whl.metadata (9.0 kB)
-Collecting protobuf!=4.21.0,<5,>=3.19.0 (from wandb)
-  Downloading protobuf-4.25.3-cp37-abi3-manylinux2014_x86_64.whl.metadata (541 bytes)
-Requirement already satisfied: six>=1.4.0 in ./my_env/lib/python3.10/site-packages (from docker-pycreds>=0.4.0->wandb) (1.16.0)
-Collecting gitdb<5,>=4.0.1 (from GitPython!=3.1.29,>=1.0.0->wandb)
-  Downloading gitdb-4.0.11-py3-none-any.whl.metadata (1.2 kB)
-Requirement already satisfied: charset-normalizer<4,>=2 in ./my_env/lib/python3.10/site-packages (from requests<3,>=2.0.0->wandb) (3.3.2)
-Requirement already satisfied: idna<4,>=2.5 in ./my_env/lib/python3.10/site-packages (from requests<3,>=2.0.0->wandb) (3.7)
-Requirement already satisfied: urllib3<3,>=1.21.1 in ./my_env/lib/python3.10/site-packages (from requests<3,>=2.0.0->wandb) (2.2.1)
-Requirement already satisfied: certifi>=2017.4.17 in ./my_env/lib/python3.10/site-packages (from requests<3,>=2.0.0->wandb) (2024.2.2)
-Collecting smmap<6,>=3.0.1 (from gitdb<5,>=4.0.1->GitPython!=3.1.29,>=1.0.0->wandb)
-  Downloading smmap-5.0.1-py3-none-any.whl.metadata (4.3 kB)
-Downloading wandb-0.16.6-py3-none-any.whl (2.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 106.0 MB/s eta 0:00:00
-Downloading appdirs-1.4.4-py2.py3-none-any.whl (9.6 kB)
-Downloading docker_pycreds-0.4.0-py2.py3-none-any.whl (9.0 kB)
-Downloading GitPython-3.1.43-py3-none-any.whl (207 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 207.3/207.3 kB 38.4 MB/s eta 0:00:00
-Downloading protobuf-4.25.3-cp37-abi3-manylinux2014_x86_64.whl (294 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 294.6/294.6 kB 46.0 MB/s eta 0:00:00
-Downloading sentry_sdk-2.1.1-py2.py3-none-any.whl (277 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 277.3/277.3 kB 48.0 MB/s eta 0:00:00
-Downloading setproctitle-1.3.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (30 kB)
-Downloading gitdb-4.0.11-py3-none-any.whl (62 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.7/62.7 kB 13.8 MB/s eta 0:00:00
-Downloading smmap-5.0.1-py3-none-any.whl (24 kB)
-Installing collected packages: appdirs, smmap, setproctitle, sentry-sdk, protobuf, docker-pycreds, gitdb, GitPython, wandb
-  Attempting uninstall: protobuf
-    Found existing installation: protobuf 5.26.1
-    Uninstalling protobuf-5.26.1:
-      Successfully uninstalled protobuf-5.26.1
-Successfully installed GitPython-3.1.43 appdirs-1.4.4 docker-pycreds-0.4.0 gitdb-4.0.11 protobuf-4.25.3 sentry-sdk-2.1.1 setproctitle-1.3.3 smmap-5.0.1 wandb-0.16.6
 Number of points at initialisation :  5000
-wandb: ERROR api_key not configured (no-tty). call wandb.login(key=[your_api_key])
+[INFO] loading ISM SD...
 Traceback (most recent call last):
-  File "/gpfs/home1/scur2222/github/UVA-CV2-Project/main.py", line 933, in <module>
-    wandb.init(
-  File "/gpfs/home1/scur2222/github/UVA-CV2-Project/my_env/lib/python3.10/site-packages/wandb/sdk/wandb_init.py", line 1200, in init
-    raise e
-  File "/gpfs/home1/scur2222/github/UVA-CV2-Project/my_env/lib/python3.10/site-packages/wandb/sdk/wandb_init.py", line 1177, in init
-    wi.setup(kwargs)
-  File "/gpfs/home1/scur2222/github/UVA-CV2-Project/my_env/lib/python3.10/site-packages/wandb/sdk/wandb_init.py", line 301, in setup
-    wandb_login._login(
-  File "/gpfs/home1/scur2222/github/UVA-CV2-Project/my_env/lib/python3.10/site-packages/wandb/sdk/wandb_login.py", line 334, in _login
-    wlogin.prompt_api_key()
-  File "/gpfs/home1/scur2222/github/UVA-CV2-Project/my_env/lib/python3.10/site-packages/wandb/sdk/wandb_login.py", line 263, in prompt_api_key
-    raise UsageError("api_key not configured (no-tty). call " + directive)
-wandb.errors.UsageError: api_key not configured (no-tty). call wandb.login(key=[your_api_key])
-Traceback (most recent call last):
-  File "/gpfs/home1/scur2222/github/UVA-CV2-Project/main2.py", line 703, in <module>
-    raise ValueError(f"Cannot find mesh from {default_path}, must specify --mesh explicitly!")
-ValueError: Cannot find mesh from logs/baseline_mvdream/corgi_mesh.obj, must specify --mesh explicitly!
+  File "/gpfs/home6/scur2173/github/UVA-CV2-Project/main.py", line 943, in <module>
+    gui.train(opt.iters)
+  File "/gpfs/home6/scur2173/github/UVA-CV2-Project/main.py", line 906, in train
+    self.prepare_train()
+  File "/gpfs/home6/scur2173/github/UVA-CV2-Project/main.py", line 151, in prepare_train
+    from guidance.sd_ISM_utils import StableDiffusion
+  File "/gpfs/home6/scur2173/github/UVA-CV2-Project/guidance/sd_ISM_utils.py", line 7, in <module>
+    from .sd_step import *
+  File "/gpfs/home6/scur2173/github/UVA-CV2-Project/guidance/sd_step.py", line 16, in <module>
+    from diffusers.utils import BaseOutput, randn_tensor
+ImportError: cannot import name 'randn_tensor' from 'diffusers.utils' (/gpfs/home6/scur2173/github/UVA-CV2-Project/my_env/lib/python3.10/site-packages/diffusers/utils/__init__.py)
 
 JOB STATISTICS
 ==============
-Job ID: 6170168
+Job ID: 6172284
 Cluster: snellius
-User/Group: scur2222/scur2222
-State: RUNNING
+User/Group: scur2173/scur2173
+State: COMPLETED (exit code 0)
 Nodes: 1
 Cores per node: 18
-CPU Utilized: 00:00:28
-CPU Efficiency: 5.19% of 00:09:00 core-walltime
-Job Wall-clock time: 00:00:30
-Memory Utilized: 1.21 MB
+CPU Utilized: 00:00:15
+CPU Efficiency: 4.17% of 00:06:00 core-walltime
+Job Wall-clock time: 00:00:20
+Memory Utilized: 1.12 MB
 Memory Efficiency: 0.00% of 120.00 GB
-WARNING: Efficiency statistics may be misleading for RUNNING jobs.
