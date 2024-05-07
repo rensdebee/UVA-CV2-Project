@@ -718,9 +718,9 @@ if __name__ == "__main__":
             raise ValueError(f"Cannot find mesh from {default_path}, must specify --mesh explicitly!")
 
     gui = GUI(opt)
-    os.environ['WANDB_TIMEOUT'] = '120'
-    now = datetime.now() # current date and time
-    date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
+    # os.environ['WANDB_TIMEOUT'] = '120'
+    # now = datetime.now() # current date and time
+    # date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
     # start a new wandb run to track this script
     # wandb.init(
     #     # set the wandb project where this run will be logged
