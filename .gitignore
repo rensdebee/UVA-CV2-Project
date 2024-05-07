@@ -24,3 +24,4 @@ point_e_model_cache/
 shap_e_model_cache/
 
 install_log.out
+run_log.out
