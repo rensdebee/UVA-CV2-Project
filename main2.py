@@ -128,6 +128,11 @@ class GUI:
                 from guidance.imagedream_utils import ImageDream
                 self.guidance_sd = ImageDream(self.device)
                 print(f"[INFO] loaded ImageDream!")
+            elif self.opt.ISM:
+                print(f"[INFO] loading ISM SD...")
+                from guidance.sd_ISM_utils import StableDiffusion
+                self.guidance_sd = StableDiffusion(self.device, None, None, guidance_opt=self.opt)
+                print(f"[INFO] loaded ISM SD!")
             else:
                 print(f"[INFO] loading SD...")
                 from guidance.sd_utils import StableDiffusion
@@ -244,11 +249,15 @@ class GUI:
                     refined_images = self.guidance_sd.refine(images, poses, strength=strength).float()
                     refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
                     loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
+                elif self.opt.ISM:
+                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, iteration=self.step)
                 else:
+                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio=step_ratio if self.opt.anneal_timestep else None, iteration=self.step)
+                #else:
                     # loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio)
-                    refined_images = self.guidance_sd.refine(images, strength=strength).float()
-                    refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
-                    loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
+                #    refined_images = self.guidance_sd.refine(images, strength=strength).float()
+                #    refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
+                #    loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
 
             if self.enable_zero123:
                 # loss = loss + self.opt.lambda_zero123 * self.guidance_zero123.train_step(images, vers, hors, radii, step_ratio)
@@ -361,6 +370,12 @@ class GUI:
     
         path = os.path.join(self.opt.outdir, self.opt.save_path + '.' + self.opt.mesh_format)
         self.renderer.export_mesh(path)
+
+        wandb.log(
+        {
+            "generated_samples": wandb.Object3D(open(path))
+
+        })
 
         print(f"[INFO] save model to {path}.")
 
@@ -703,7 +718,17 @@ if __name__ == "__main__":
             raise ValueError(f"Cannot find mesh from {default_path}, must specify --mesh explicitly!")
 
     gui = GUI(opt)
-
+    os.environ['WANDB_TIMEOUT'] = '120'
+    now = datetime.now() # current date and time
+    date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
+    # start a new wandb run to track this script
+    wandb.init(
+        # set the wandb project where this run will be logged
+        project="DreamGaussian-ISM",
+        name = opt.prompt+ "_"+str(opt.ISM) + "_"+str(date_time),
+        # track hyperparameters and run metadata
+        config=dict(opt)
+    )
     if opt.gui:
         gui.render()
     else:
