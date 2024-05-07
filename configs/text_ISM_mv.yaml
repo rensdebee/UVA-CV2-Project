@@ -47,8 +47,6 @@ max_t_range: 0.98
 # guidance loss weights (0 to disable)
 lambda_sd: 1
 lambda_zero123: 0
-# warmup rgb supervision for image-to-3d
-warmup_rgb_loss: True
 # training batch size per iter
 batch_size: 1
 # training iterations for stage 1
@@ -94,12 +92,22 @@ feature_lr: 0.01
 opacity_lr: 0.05
 scaling_lr: 0.005
 rotation_lr: 0.005
+
+# SDS
 percent_dense: 0.01
 density_start_iter: 0
 density_end_iter: 3000
 densification_interval: 50
 opacity_reset_interval: 700
 densify_grad_threshold: 0.01
+
+# # ISM
+# percent_dense: 0.003
+# density_start_iter: 100
+# density_end_iter: 30_00 
+# densification_interval: 100
+# opacity_reset_interval: 300
+# densify_grad_threshold: 0.00075
 
 ### Textured Mesh
 geom_lr: 0.0001
