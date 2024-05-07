@@ -137,10 +137,16 @@ class GUI:
         # lazy load guidance model
         if self.guidance_sd is None and self.enable_sd:
             if self.opt.mvdream:
-                print(f"[INFO] loading MVDream...")
-                from guidance.mvdream_utils import MVDream
-                self.guidance_sd = MVDream(self.device)
-                print(f"[INFO] loaded MVDream!")
+                if  self.opt.ISM:
+                    print(f"[INFO] loading MVDream...")
+                    from guidance.mvdream_ISM_utils import MVDream
+                    self.guidance_sd = MVDream(self.device, guidance_opt=self.opt)
+                    print(f"[INFO] loaded MVDream!")
+                else:
+                    print(f"[INFO] loading MVDream...")
+                    from guidance.mvdream_utils import MVDream
+                    self.guidance_sd = MVDream(self.device)
+                    print(f"[INFO] loaded MVDream!")
             elif self.opt.imagedream:
                 print(f"[INFO] loading ImageDream...")
                 from guidance.imagedream_utils import ImageDream

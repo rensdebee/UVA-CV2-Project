@@ -16,7 +16,7 @@ ref_size: 256
 density_thresh: 1
 
 ### Output
-outdir: logs/.test
+outdir: logs/mvdream_ism
 mesh_format: obj
 save_path: ???
 
@@ -28,7 +28,7 @@ imagedream: False
 # use stable-zero123 instead of zero123-xl
 stable_zero123: False 
 # use ISM loss
-ISM: False
+ISM: True
 
 #ISM settings
 seed: 42
