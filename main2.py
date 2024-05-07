@@ -371,11 +371,11 @@ class GUI:
         path = os.path.join(self.opt.outdir, self.opt.save_path + '.' + self.opt.mesh_format)
         self.renderer.export_mesh(path)
 
-        wandb.log(
-        {
-            "generated_samples": wandb.Object3D(open(path))
+        # wandb.log(
+        # {
+        #     "generated_samples": wandb.Object3D(open(path))
 
-        })
+        # })
 
         print(f"[INFO] save model to {path}.")
 
@@ -722,13 +722,13 @@ if __name__ == "__main__":
     now = datetime.now() # current date and time
     date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
     # start a new wandb run to track this script
-    wandb.init(
-        # set the wandb project where this run will be logged
-        project="DreamGaussian-ISM",
-        name = opt.prompt+ "_"+str(opt.ISM) + "_"+str(date_time),
-        # track hyperparameters and run metadata
-        config=dict(opt)
-    )
+    # wandb.init(
+    #     # set the wandb project where this run will be logged
+    #     project="DreamGaussian-ISM",
+    #     name = opt.prompt+ "_"+str(opt.ISM) + "_"+str(date_time),
+    #     # track hyperparameters and run metadata
+    #     config=dict(opt)
+    # )
     if opt.gui:
         gui.render()
     else:
