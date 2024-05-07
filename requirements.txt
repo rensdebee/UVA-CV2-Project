@@ -10,6 +10,14 @@ opencv-python
 imageio
 imageio-ffmpeg
 omegaconf
+mediapipe
+Pillow
+fire
+PyYAML
+safetensors
+wandb
+triton #Disable on windows
+xformers
 
 # torch
 einops
