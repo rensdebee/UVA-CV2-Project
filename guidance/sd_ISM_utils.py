@@ -322,9 +322,9 @@ class StableDiffusion(nn.Module):
                 viz_images = torch.cat([pred_rgb_512, 
                                         latents_rgb, latents_sp_rgb, norm_grad,
                                         pred_x0_sp, pred_x0_pos],dim=0)
-        #         wandb.log({"examples": wandb.Image(viz_images, caption="pred_rgb_512, latents_rgb, latents_sp_rgb, norm_grad, pred_x0_sp, pred_x0_pos")}) 
-        #         # save_image(viz_images, save_path_iter)
-        # wandb.log({"loss": loss})
+                wandb.log({"examples": wandb.Image(viz_images, caption="pred_rgb_512, latents_rgb, latents_sp_rgb, norm_grad, pred_x0_sp, pred_x0_pos")}) 
+                # save_image(viz_images, save_path_iter)
+        wandb.log({"loss": loss})
         return loss
 
     @torch.no_grad()

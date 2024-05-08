@@ -27,20 +27,20 @@ module load GCC/11.3.0
 source my_env/bin/activate
 
 # define variables
-prompt="a plush toy of a corgi nurse"
-save_path="corgi"
+prompt="An armored green-skin orc warrior riding a vicious hog"
+save_path="warrior/warrior"
 
 # generate text-to-3D, adjust prompt as needed
 
 ### training gaussian stage
-#python main.py --config configs/text_ISM.yaml prompt="$prompt" save_path=$save_path
+python main.py --config configs/text_ISM.yaml prompt="$prompt" save_path=$save_path
 
 ### training mesh stage
-#python main2.py --config configs/text_ISM.yaml prompt="$prompt" save_path=$save_path
+# python main2.py --config configs/text_ISM.yaml prompt="$prompt" save_path=$save_path
 
 # # alternatively, the MVDream variant can also be used as follows:
 # python main.py --config configs/text_mv.yaml prompt="$prompt" save_path=$save_path
 # python main2.py --config configs/text_mv.yaml prompt="$prompt" save_path=$save_path
 
 # convert the obtained obj to video
-python scripts/convert_obj_to_video.py --dir ./logs/baseline_ism
+# python scripts/convert_obj_to_video.py --dir ./logs/baseline_ism/

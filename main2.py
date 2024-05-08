@@ -4,6 +4,8 @@ import time
 import tqdm
 import numpy as np
 import dearpygui.dearpygui as dpg
+import wandb
+from datetime import datetime
 
 import torch
 import torch.nn.functional as F
@@ -718,17 +720,17 @@ if __name__ == "__main__":
             raise ValueError(f"Cannot find mesh from {default_path}, must specify --mesh explicitly!")
 
     gui = GUI(opt)
-    # os.environ['WANDB_TIMEOUT'] = '120'
-    # now = datetime.now() # current date and time
-    # date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
+    os.environ['WANDB_TIMEOUT'] = '120'
+    now = datetime.now() # current date and time
+    date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
     # start a new wandb run to track this script
-    # wandb.init(
-    #     # set the wandb project where this run will be logged
-    #     project="DreamGaussian-ISM",
-    #     name = opt.prompt+ "_"+str(opt.ISM) + "_"+str(date_time),
-    #     # track hyperparameters and run metadata
-    #     config=dict(opt)
-    # )
+    wandb.init(
+        # set the wandb project where this run will be logged
+        project="DreamGaussian-ISM",
+        name = opt.prompt+ "_"+str(opt.ISM) + "_"+str(date_time),
+        # track hyperparameters and run metadata
+        config=dict(opt)
+    )
     if opt.gui:
         gui.render()
     else:
