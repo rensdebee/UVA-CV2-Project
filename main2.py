@@ -246,20 +246,22 @@ class GUI:
             # guidance loss
             strength = step_ratio * 0.15 + 0.8
             if self.enable_sd:
-                if self.opt.mvdream or self.opt.imagedream:
-                    # loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, poses, step_ratio)
-                    refined_images = self.guidance_sd.refine(images, poses, strength=strength).float()
+                # if self.opt.mvdream or self.opt.imagedream:
+                #     # loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, poses, step_ratio)
+                #     refined_images = self.guidance_sd.refine(images, poses, strength=strength).float()
+                #     refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
+                #     loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
+                if self.opt.ISM:
+                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, iteration=self.step)
+                # else:
+                #     loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio=step_ratio if self.opt.anneal_timestep else None, iteration=self.step)
+                else:
+                    # loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio)
+                    refined_images = self.guidance_sd.refine(images, strength=strength).float()
                     refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
                     loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
-                elif self.opt.ISM:
-                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, iteration=self.step)
-                else:
-                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio=step_ratio if self.opt.anneal_timestep else None, iteration=self.step)
-                #else:
-                    # loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio)
-                #    refined_images = self.guidance_sd.refine(images, strength=strength).float()
-                #    refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
-                #    loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
+
+
 
             if self.enable_zero123:
                 # loss = loss + self.opt.lambda_zero123 * self.guidance_zero123.train_step(images, vers, hors, radii, step_ratio)
@@ -373,11 +375,11 @@ class GUI:
         path = os.path.join(self.opt.outdir, self.opt.save_path + '.' + self.opt.mesh_format)
         self.renderer.export_mesh(path)
 
-        # wandb.log(
-        # {
-        #     "generated_samples": wandb.Object3D(open(path))
+        wandb.log(
+        {
+            "generated_samples": wandb.Object3D(open(path))
 
-        # })
+        })
 
         print(f"[INFO] save model to {path}.")
 
