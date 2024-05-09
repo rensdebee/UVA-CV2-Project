@@ -13,6 +13,7 @@ stage2: MSE
 point_e: False
 # for point_e / shap_e -> num_pts: 10 || for default num_pts: 5000
 num_pts: 5000
+outdir: logs/MV_ISM
 
 ### Input
 # input rgba image path (default to None, can be load in GUI too)
@@ -32,7 +33,6 @@ ref_size: 256
 density_thresh: 1
 
 ### Output
-outdir: logs/baseline
 mesh_format: obj
 save_path: ???
 
