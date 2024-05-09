@@ -3,7 +3,8 @@
 input: 
 # input text prompt (default to None, can be input in GUI too)
 prompt:
-negative_prompt: 'unrealistic, blurry, low quality, out of focus, ugly, low contrast, dull, low-resolution, oversaturation.'
+negative_prompt: "ugly, bad anatomy, blurry, pixelated obscure, unnatural colors, poor lighting, dull, and unclear, cropped, lowres, low quality, artifacts, duplicate, morbid, mutilated, poorly drawn face, deformed, dehydrated, bad proportions"
+
 inverse_text: ''
 
 

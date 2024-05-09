@@ -48,3 +48,4 @@ gradio
 ipywidgets
 blobfile
 git+https://github.com/openai/point-e.git
+git+https://github.com/bytedance/MVDream
