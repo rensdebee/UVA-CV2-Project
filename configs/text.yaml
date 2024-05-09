@@ -1,8 +1,22 @@
+# input text prompt (default to None, can be input in GUI too)
+prompt:
+# use mvdream instead of sd 2.1
+mvdream: False
+# SDS (Default) / ISM / MSE 
+stage1: SDS
+# SDS / ISM / MSE (Default)
+stage2: MSE
+## for point_e / shap_e use:
+# OFF: point_e: False (default)
+# POINT-E: "an icecream" 
+# SHAPE-E: "SHAPE_an icecream" (append SHAPE_))
+point_e: False
+# for point_e / shap_e -> num_pts: 10 || for default num_pts: 5000
+num_pts: 5000
+
 ### Input
 # input rgba image path (default to None, can be load in GUI too)
 input: 
-# input text prompt (default to None, can be input in GUI too)
-prompt:
 negative_prompt: "ugly, bad anatomy, blurry, pixelated obscure, unnatural colors, poor lighting, dull, and unclear, cropped, lowres, low quality, artifacts, duplicate, morbid, mutilated, poorly drawn face, deformed, dehydrated, bad proportions"
 
 inverse_text: ''
@@ -22,15 +36,6 @@ outdir: logs/baseline
 mesh_format: obj
 save_path: ???
 
-### Training
-# use mvdream instead of sd 2.1
-mvdream: False
-# use imagedream
-imagedream: False
-# use stable-zero123 instead of zero123-xl
-stable_zero123: False 
-# use ISM loss
-ISM: False
 
 #ISM settings
 seed: 42
@@ -82,11 +87,6 @@ H: 800
 W: 800
 
 ### Gaussian splatting
-## for point_e / shap_e use:
-#point_e: "SHAPE_an icecream" || point_e: False
-point_e: False
-# for point_e / shap_e -> num_pts: 10 || for default num_pts: 5000
-num_pts: 5000
 sh_degree: 0
 position_lr_init: 0.001
 position_lr_final: 0.00002

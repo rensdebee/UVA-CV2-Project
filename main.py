@@ -137,22 +137,17 @@ class GUI:
         # lazy load guidance model
         if self.guidance_sd is None and self.enable_sd:
             if self.opt.mvdream:
-                if  self.opt.ISM:
-                    print(f"[INFO] loading MVDream...")
+                if self.opt.stage1 == "ISM":
+                    print(f"[INFO] loading MVDream (ISM)...")
                     from guidance.mvdream_ISM_utils import MVDream
                     self.guidance_sd = MVDream(self.device, guidance_opt=self.opt)
                     print(f"[INFO] loaded MVDream!")
                 else:
-                    print(f"[INFO] loading MVDream...")
+                    print(f"[INFO] loading MVDream (SDS)...")
                     from guidance.mvdream_utils import MVDream
                     self.guidance_sd = MVDream(self.device)
                     print(f"[INFO] loaded MVDream!")
-            elif self.opt.imagedream:
-                print(f"[INFO] loading ImageDream...")
-                from guidance.imagedream_utils import ImageDream
-                self.guidance_sd = ImageDream(self.device)
-                print(f"[INFO] loaded ImageDream!")
-            elif self.opt.ISM:
+            elif self.opt.stage1 == "ISM":
                 print(f"[INFO] loading ISM SD...")
                 from guidance.sd_ISM_utils import StableDiffusion
                 self.guidance_sd = StableDiffusion(self.device, None, None, guidance_opt=self.opt)
@@ -163,34 +158,10 @@ class GUI:
                 self.guidance_sd = StableDiffusion(self.device)
                 print(f"[INFO] loaded SD!")
 
-        if self.guidance_zero123 is None and self.enable_zero123:
-            print(f"[INFO] loading zero123...")
-            from guidance.zero123_utils import Zero123
-            if self.opt.stable_zero123:
-                self.guidance_zero123 = Zero123(self.device, model_key='ashawkey/stable-zero123-diffusers')
-            else:
-                self.guidance_zero123 = Zero123(self.device, model_key='ashawkey/zero123-xl-diffusers')
-            print(f"[INFO] loaded zero123!")
-
-        # input image
-        if self.input_img is not None:
-            self.input_img_torch = torch.from_numpy(self.input_img).permute(2, 0, 1).unsqueeze(0).to(self.device)
-            self.input_img_torch = F.interpolate(self.input_img_torch, (self.opt.ref_size, self.opt.ref_size), mode="bilinear", align_corners=False)
-
-            self.input_mask_torch = torch.from_numpy(self.input_mask).permute(2, 0, 1).unsqueeze(0).to(self.device)
-            self.input_mask_torch = F.interpolate(self.input_mask_torch, (self.opt.ref_size, self.opt.ref_size), mode="bilinear", align_corners=False)
-
         # prepare embeddings
         with torch.no_grad():
-
             if self.enable_sd:
-                if self.opt.imagedream:
-                    self.guidance_sd.get_image_text_embeds(self.input_img_torch, [self.prompt], [self.negative_prompt])
-                else:
-                    self.guidance_sd.get_text_embeds([self.prompt], [self.negative_prompt])
-
-            if self.enable_zero123:
-                self.guidance_zero123.get_img_embeds(self.input_img_torch)
+                self.guidance_sd.get_text_embeds([self.prompt], [self.negative_prompt])
 
     def train_step(self):
         starter = torch.cuda.Event(enable_timing=True)
@@ -208,7 +179,7 @@ class GUI:
             loss = 0
 
             ### known view
-            if self.input_img_torch is not None and not self.opt.imagedream:
+            if self.input_img_torch is not None:
                 cur_cam = self.fixed_cam
                 out = self.renderer.render(cur_cam)
 
@@ -252,7 +223,7 @@ class GUI:
                 images.append(image)
 
                 # enable mvdream training
-                if self.opt.mvdream or self.opt.imagedream:
+                if self.opt.mvdream:
                     for view_i in range(1, 4):
                         pose_i = orbit_camera(self.opt.elevation + ver, hor + 90 * view_i, self.opt.radius + radius)
                         poses.append(pose_i)
@@ -273,16 +244,27 @@ class GUI:
             # kiui.vis.plot_image(images)
 
             # guidance loss
-            if self.enable_sd:
-                if self.opt.mvdream or self.opt.imagedream:
+            strength = step_ratio * 0.15 + 0.8
+            # MVdream model
+            if self.opt.mvdream:
+                if self.opt.stage1 == "MSE":
+                    refined_images = self.guidance_sd.refine(images, poses, strength=strength).float()
+                    refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
+                    loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
+                elif self.opt.stage1 == "ISM":
                     loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, poses, step_ratio=step_ratio if self.opt.anneal_timestep else None)
-                elif self.opt.ISM:
+                else:
+                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, poses, step_ratio)
+            else: # Stable diffusion base model
+                if self.opt.stage1 == "MSE":
+                    refined_images = self.guidance_sd.refine(images, strength=strength).float()
+                    refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
+                    loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
+                elif self.opt.stage1 == "ISM":
                     loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, iteration=self.step)
                 else:
-                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio=step_ratio if self.opt.anneal_timestep else None, iteration=self.step)
-
-            if self.enable_zero123:
-                loss = loss + self.opt.lambda_zero123 * self.guidance_zero123.train_step(images, vers, hors, radii, step_ratio=step_ratio if self.opt.anneal_timestep else None, default_elevation=self.opt.elevation)
+                    loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio)
+    
             
             # optimize step
             loss.backward()
@@ -939,7 +921,7 @@ if __name__ == "__main__":
     wandb.init(
         # set the wandb project where this run will be logged
         project="DreamGaussian-ISM",
-        name = opt.prompt+ "_"+str(opt.ISM) + "_"+str(date_time),
+        name = opt.prompt+ "_loss:"+str(opt.stage1) + "_"+str(date_time),
         # track hyperparameters and run metadata
         config=dict(opt)
     )

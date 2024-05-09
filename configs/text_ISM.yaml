@@ -1,9 +1,24 @@
+# input text prompt (default to None, can be input in GUI too)
+prompt:
+# use mvdream instead of sd 2.1
+mvdream: False
+# SDS (Default) / ISM / MSE 
+stage1: ISM
+# SDS / ISM / MSE (Default)
+stage2: MSE
+## for point_e / shap_e use:
+# OFF: point_e: False (default)
+# POINT-E: "an icecream" 
+# SHAPE-E: "SHAPE_an icecream" (append SHAPE_))
+point_e: False
+# for point_e / shap_e -> num_pts: 10 || for default num_pts: 5000
+num_pts: 5000
+
 ### Input
 # input rgba image path (default to None, can be load in GUI too)
 input: 
-# input text prompt (default to None, can be input in GUI too)
-prompt:
 negative_prompt: "ugly, bad anatomy, blurry, pixelated obscure, unnatural colors, poor lighting, dull, and unclear, cropped, lowres, low quality, artifacts, duplicate, morbid, mutilated, poorly drawn face, deformed, dehydrated, bad proportions"
+
 inverse_text: ''
 
 
@@ -17,19 +32,10 @@ ref_size: 256
 density_thresh: 1
 
 ### Output
-outdir: logs/baseline_ism
+outdir: logs/baseline
 mesh_format: obj
 save_path: ???
 
-### Training
-# use mvdream instead of sd 2.1
-mvdream: False
-# use imagedream
-imagedream: False
-# use stable-zero123 instead of zero123-xl
-stable_zero123: False 
-# use ISM loss
-ISM: True
 
 #ISM settings
 seed: 42
@@ -37,7 +43,7 @@ warmup_iter: 1500
 xs_delta_t: 200
 xs_inv_steps: 5
 xs_eta: 0.0
-delta_t: 50
+delta_t: 25
 delta_t_start: 100
 denoise_guidance_scale: 1.0
 guidance_scale: 7.5
@@ -81,11 +87,6 @@ H: 800
 W: 800
 
 ### Gaussian splatting
-## for point_e / shap_e use:
-#point_e: "SHAPE_an icecream" || point_e: False
-point_e: False
-# for point_e / shap_e -> num_pts: 10 || for default num_pts: 5000
-num_pts: 5000
 sh_degree: 0
 position_lr_init: 0.001
 position_lr_final: 0.00002
@@ -96,21 +97,21 @@ opacity_lr: 0.05
 scaling_lr: 0.005
 rotation_lr: 0.005
 
-# # SDS
-# percent_dense: 0.01
-# density_start_iter: 0
-# density_end_iter: 3000
-# densification_interval: 50
-# opacity_reset_interval: 700
-# densify_grad_threshold: 0.01
+# SDS
+percent_dense: 0.01
+density_start_iter: 0
+density_end_iter: 3000
+densification_interval: 50
+opacity_reset_interval: 700
+densify_grad_threshold: 0.01
 
-# ISM
-percent_dense: 0.003
-density_start_iter: 100
-density_end_iter: 30_00 
-densification_interval: 100
-opacity_reset_interval: 300
-densify_grad_threshold: 0.00075
+# # ISM
+# percent_dense: 0.003
+# density_start_iter: 100
+# density_end_iter: 30_00 
+# densification_interval: 100
+# opacity_reset_interval: 300
+# densify_grad_threshold: 0.00075
 
 ### Textured Mesh
 geom_lr: 0.0001

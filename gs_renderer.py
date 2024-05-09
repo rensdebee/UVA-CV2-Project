@@ -692,8 +692,8 @@ class Renderer:
     def initialize(self, input=None, num_pts=5000, radius=0.5):
         # load checkpoint
         if not input:
+            print("Init from random point cloud")
             # init from random point cloud
-            
             phis = np.random.random((num_pts,)) * 2 * np.pi
             costheta = np.random.random((num_pts,)) * 2 - 1
             thetas = np.arccos(costheta)
@@ -711,16 +711,19 @@ class Renderer:
             )
             self.gaussians.create_from_pcd(pcd, 10)
         elif isinstance(input, BasicPointCloud):
+            print("Init from given point cloud")
             # load from a provided pcd
             self.gaussians.create_from_pcd(input, 1)
         elif isinstance(input, str):
             if input.startswith("SHAPE_"):
                 input = input.lstrip("SHAPE_")
+                print(f"Init from SHAP-E: {input}")
                 pcd = shap_e_generate_pcd_from_text(input)
                 xyz, rgb = pcd[:, :3], pcd[:, 3:]
-
+    
                 x, y, z = np.split(xyz, 3, axis=-1)
-                xyz = np.stack([x, z, -y], axis=-1)
+                # In my coords  x          z  y
+                xyz = np.stack([-1*x,z, -1*y], axis=-1)
 
                 thetas = np.random.rand(num_pts)*np.pi
                 phis = np.random.rand(num_pts)*2*np.pi        
@@ -741,11 +744,13 @@ class Renderer:
                 shs = np.random.random((num_pts, 3)) / 255.0
                 pcd = BasicPointCloud(points=xyz, colors=SH2RGB(shs), normals=np.zeros((num_pts, 3)))
                 self.gaussians.create_from_pcd(pcd, 10)
-            else:           
+            else: 
+                print(f"Init from POINT-E: {input}")         
                 xyz,rgb = init_from_pointe(input)
 
                 x, y, z = np.split(xyz, 3, axis=-1)
-                xyz = np.stack([x, z, -y], axis=-1)
+                # In my coords  z   y  x
+                xyz = np.stack([y, z, x], axis=-1)
 
                 thetas = np.random.rand(num_pts)*np.pi
                 phis = np.random.rand(num_pts)*2*np.pi        
@@ -767,6 +772,7 @@ class Renderer:
                 pcd = BasicPointCloud(points=xyz, colors=SH2RGB(shs), normals=np.zeros((num_pts, 3)))
                 self.gaussians.create_from_pcd(pcd, 10)
         else:
+            print("Init from saved PLY")
             # load from saved ply
             self.gaussians.load_ply(input)
 

@@ -205,7 +205,7 @@ class StableDiffusion(nn.Module):
 
         target = (latents - grad).detach()
         loss = 0.5 * F.mse_loss(latents.float(), target, reduction='sum') / latents.shape[0]
-        if iteration % 100 == 0:
+        if iteration % 100 == 0 or iteration == 1:
             wandb.log({"examples": wandb.Image(pred_rgb_512)}) 
         wandb.log({"loss": loss})
         return loss

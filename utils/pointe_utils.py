@@ -1,6 +1,6 @@
 import torch
 from tqdm.auto import tqdm
-
+ 
 from point_e.diffusion.configs import DIFFUSION_CONFIGS, diffusion_from_config
 from point_e.diffusion.sampler import PointCloudSampler
 from point_e.models.download import load_checkpoint

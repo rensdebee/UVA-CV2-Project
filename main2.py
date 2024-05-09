@@ -104,7 +104,7 @@ class GUI:
         self.optimizer = torch.optim.Adam(self.renderer.get_params())
 
         # default camera
-        if self.opt.mvdream or self.opt.imagedream:
+        if self.opt.mvdream:
             # the second view is the front view for mvdream/imagedream.
             pose = orbit_camera(self.opt.elevation, 90, self.opt.radius)
         else:
@@ -119,50 +119,32 @@ class GUI:
         # lazy load guidance model
         if self.guidance_sd is None and self.enable_sd:
             if self.opt.mvdream:
-                print(f"[INFO] loading MVDream...")
-                from guidance.mvdream_utils import MVDream
-                self.guidance_sd = MVDream(self.device)
-                print(f"[INFO] loaded MVDream!")
-            elif self.opt.imagedream:
-                print(f"[INFO] loading ImageDream...")
-                from guidance.imagedream_utils import ImageDream
-                self.guidance_sd = ImageDream(self.device)
-                print(f"[INFO] loaded ImageDream!")
+                if self.opt.stage2 == "ISM":
+                    print(f"[INFO] loading MVDream (ISM)...")
+                    from guidance.mvdream_ISM_utils import MVDream
+                    self.guidance_sd = MVDream(self.device, guidance_opt=self.opt)
+                    print(f"[INFO] loaded MVDream!")
+                else:
+                    print(f"[INFO] loading MVDream (SDS)...")
+                    from guidance.mvdream_utils import MVDream
+                    self.guidance_sd = MVDream(self.device)
+                    print(f"[INFO] loaded MVDream!")
+            elif self.opt.stage2 == "ISM":
+                print(f"[INFO] loading ISM SD...")
+                from guidance.sd_ISM_utils import StableDiffusion
+                self.guidance_sd = StableDiffusion(self.device, None, None, guidance_opt=self.opt)
+                print(f"[INFO] loaded ISM SD!")
             else:
                 print(f"[INFO] loading SD...")
                 from guidance.sd_utils import StableDiffusion
                 self.guidance_sd = StableDiffusion(self.device)
                 print(f"[INFO] loaded SD!")
 
-        if self.guidance_zero123 is None and self.enable_zero123:
-            print(f"[INFO] loading zero123...")
-            from guidance.zero123_utils import Zero123
-            if self.opt.stable_zero123:
-                self.guidance_zero123 = Zero123(self.device, model_key='ashawkey/stable-zero123-diffusers')
-            else:
-                self.guidance_zero123 = Zero123(self.device, model_key='ashawkey/zero123-xl-diffusers')
-            print(f"[INFO] loaded zero123!")
-        # input image
-        if self.input_img is not None:
-            self.input_img_torch = torch.from_numpy(self.input_img).permute(2, 0, 1).unsqueeze(0).to(self.device)
-            self.input_img_torch = F.interpolate(self.input_img_torch, (self.opt.ref_size, self.opt.ref_size), mode="bilinear", align_corners=False)
-
-            self.input_mask_torch = torch.from_numpy(self.input_mask).permute(2, 0, 1).unsqueeze(0).to(self.device)
-            self.input_mask_torch = F.interpolate(self.input_mask_torch, (self.opt.ref_size, self.opt.ref_size), mode="bilinear", align_corners=False)
-            self.input_img_torch_channel_last = self.input_img_torch[0].permute(1,2,0).contiguous()
-
         # prepare embeddings
         with torch.no_grad():
-
             if self.enable_sd:
-                if self.opt.imagedream:
-                    self.guidance_sd.get_image_text_embeds(self.input_img_torch, [self.prompt], [self.negative_prompt])
-                else:
-                    self.guidance_sd.get_text_embeds([self.prompt], [self.negative_prompt])
-
-            if self.enable_zero123:
-                self.guidance_zero123.get_img_embeds(self.input_img_torch)
-
+                self.guidance_sd.get_text_embeds([self.prompt], [self.negative_prompt])
+    
     def train_step(self):
         starter = torch.cuda.Event(enable_timing=True)
         ender = torch.cuda.Event(enable_timing=True)
@@ -177,7 +159,7 @@ class GUI:
             loss = 0
 
             ### known view
-            if self.input_img_torch is not None and not self.opt.imagedream:
+            if self.input_img_torch is not None:
 
                 ssaa = min(2.0, max(0.125, 2 * np.random.random()))
                 out = self.renderer.render(*self.fixed_cam, self.opt.ref_size, self.opt.ref_size, ssaa=ssaa)
@@ -219,7 +201,7 @@ class GUI:
                 images.append(image)
 
                 # enable mvdream training
-                if self.opt.mvdream or self.opt.imagedream:
+                if self.opt.mvdream:
                     for view_i in range(1, 4):
                         pose_i = orbit_camera(self.opt.elevation + ver, hor + 90 * view_i, self.opt.radius + radius)
                         poses.append(pose_i)
@@ -239,24 +221,27 @@ class GUI:
             # guidance loss
             strength = step_ratio * 0.15 + 0.8
             if self.enable_sd:
-                if self.opt.mvdream or self.opt.imagedream:
-                    # loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, poses, step_ratio)
-                    refined_images = self.guidance_sd.refine(images, poses, strength=strength).float()
-                    refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
-                    loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
-                else:
-                    # loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio)
-                    refined_images = self.guidance_sd.refine(images, strength=strength).float()
-                    refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
-                    loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
+                # MVdream model
+                if self.opt.mvdream:
+                    if self.opt.stage2 == "SDS":
+                        loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, poses, step_ratio)
+                    elif self.opt.stage2 == "ISM":
+                        loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, poses, step_ratio=step_ratio if self.opt.anneal_timestep else None)
+                    else:
+                        refined_images = self.guidance_sd.refine(images, poses, strength=strength).float()
+                        refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
+                        loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
+                else: # Stable diffusion base model
+                    if self.opt.stage2 == "SDS":
+                        loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, step_ratio)
+                    elif self.opt.stage2 == "ISM":
+                        loss = loss + self.opt.lambda_sd * self.guidance_sd.train_step(images, iteration=self.step)
+                    else:
+                        refined_images = self.guidance_sd.refine(images, strength=strength).float()
+                        refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
+                        loss = loss + self.opt.lambda_sd * F.mse_loss(images, refined_images)
 
-            if self.enable_zero123:
-                # loss = loss + self.opt.lambda_zero123 * self.guidance_zero123.train_step(images, vers, hors, radii, step_ratio)
-                refined_images = self.guidance_zero123.refine(images, vers, hors, radii, strength=strength, default_elevation=self.opt.elevation).float()
-                refined_images = F.interpolate(refined_images, (render_resolution, render_resolution), mode="bilinear", align_corners=False)
-                loss = loss + self.opt.lambda_zero123 * F.mse_loss(images, refined_images)
-                # loss = loss + self.opt.lambda_zero123 * self.lpips_loss(images, refined_images)
-
+        
             # optimize step
             loss.backward()
             self.optimizer.step()
