@@ -116,7 +116,7 @@ class GUI:
         self.optimizer = self.renderer.gaussians.optimizer
 
         # default camera
-        if self.opt.mvdream or self.opt.imagedream:
+        if self.opt.mvdream:
             # the second view is the front view for mvdream/imagedream.
             pose = orbit_camera(self.opt.elevation, 90, self.opt.radius)
         else:
@@ -919,10 +919,9 @@ if __name__ == "__main__":
     date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
     # start a new wandb run to track this script
     wandb.init(
-        # set the wandb project where this run will be logged
-        project="DreamGaussian-ISM",
-        name = opt.prompt+ "_loss:"+str(opt.stage1) + "_"+str(date_time),
-        # track hyperparameters and run metadata
+        entity="uva-roan-vb",
+        project="prompts_test",
+        name = opt.prompt+"_st1_"+str(opt.stage1)+"_shape_"+str(opt.point_e)+"_"+str(date_time),
         config=dict(opt)
     )
     if opt.gui:

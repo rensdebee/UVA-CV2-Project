@@ -25,7 +25,7 @@ plyfile
 pygltflib
 
 # for gui
-dearpygui
+dearpygui==1.9
 
 # for stable-diffusion
 huggingface_hub
@@ -37,7 +37,7 @@ transformers
 xatlas
 trimesh
 PyMCubes
-pymeshlab
+pymeshlab==2022.2
 
 rembg[gpu,cli]
 
@@ -48,4 +48,3 @@ gradio
 ipywidgets
 blobfile
 git+https://github.com/openai/point-e.git
-git+https://github.com/bytedance/MVDream
