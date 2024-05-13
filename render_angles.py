@@ -1,81 +1,64 @@
-import sys
-from OpenGL.GL import *
-from OpenGL.GLU import *
-import pygame
-from pygame.locals import *
-import numpy as np
 import os
+import torch
+import numpy as np
+from PIL import Image
+from transformers import CLIPProcessor, CLIPModel
+from cam_utils import orbit_camera, OrbitCamera
+from gs_renderer import Renderer, MiniCam
 
-# Initialize Pygame and OpenGL
-pygame.init()
+def render_images(renderer, cam, obj_path, options):
+    images = []
+    poses = []
+    vers, hors, radii = [], [], []
+    
+    min_ver = max(min(options['min_ver'], options['min_ver'] - options['elevation']), -80 - options['elevation'])
+    max_ver = min(max(options['max_ver'], options['max_ver'] - options['elevation']), 80 - options['elevation'])
 
-def initialize_openGL(display):
-    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-    glEnable(GL_DEPTH_TEST)
-    glEnable(GL_LIGHTING)
-    glEnable(GL_LIGHT0)
-    glLightfv(GL_LIGHT0, GL_POSITION, (5, 5, 5, 1))
-    glLightfv(GL_LIGHT0, GL_AMBIENT, (0.1, 0.1, 0.1, 1))
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, (1, 1, 1, 1))
-    glLightfv(GL_LIGHT0, GL_SPECULAR, (1, 1, 1, 1))
-    glMatrixMode(GL_PROJECTION)
-    gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
-    glMatrixMode(GL_MODELVIEW)
+    for _ in range(options['batch_size']):
+        ver = np.random.randint(min_ver, max_ver)
+        hor = np.random.randint(-180, 180)
+        radius = 0
 
-def load_obj(file):
-    vertices = []
-    faces = []
-    with open(file) as f:
-        for line in f:
-            if line.startswith('v '):
-                vertices.append(list(map(float, line.strip().split()[1:])))
-            elif line.startswith('f '):
-                face = [int(part.split('/')[0]) - 1 for part in line.strip().split()[1:]]
-                faces.append(face)
-    return vertices, faces
+        vers.append(ver)
+        hors.append(hor)
+        radii.append(radius)
 
-def draw_model(vertices, faces):
-    glBegin(GL_TRIANGLES)
-    for face in faces:
-        for vertex in face:
-            glVertex3fv(vertices[vertex])
-    glEnd()
+        pose = orbit_camera(options['elevation'] + ver, hor, options['radius'] + radius)
+        poses.append(pose)
 
-def calculate_camera_position(azimuth, elevation, radius=10):
-    azimuth_rad = np.radians(azimuth)
-    elevation_rad = np.radians(elevation)
-    x = radius * np.cos(elevation_rad) * np.sin(azimuth_rad)
-    y = radius * np.sin(elevation_rad)
-    z = radius * np.cos(elevation_rad) * np.cos(azimuth_rad)
-    return (x, y, z)
+        cur_cam = MiniCam(pose, options['render_resolution'], options['render_resolution'], cam.fovy, cam.fovx, cam.near, cam.far)
+        
+        bg_color = torch.tensor([1, 1, 1] if np.random.rand() > options['invert_bg_prob'] else [0, 0, 0], dtype=torch.float32, device="cuda")
+        out = renderer.render(cur_cam, obj_path=obj_path, bg_color=bg_color)
 
-def render_model_at_angle(display, obj_path, azimuth, elevation, output_path):
-    initialize_openGL(display)
-    vertices, faces = load_obj(obj_path)
-    camera_pos = calculate_camera_position(azimuth, elevation)
-    glLoadIdentity()
-    gluLookAt(*camera_pos, 0, 0, 0, 0, 1, 0)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    draw_model(vertices, faces)
-    pygame.display.flip()
-    pygame.image.save(pygame.display.get_surface(), output_path)
+        image = out["image"].unsqueeze(0) # [1, 3, H, W] in [0, 1]
+        images.append(image)
+    
+    return images, poses
 
-def main():
-    display = (800, 600)
-    angles = [
-        (0, 0),     # Front view
-        (180, 0),   # Back view
-        (90, 0),    # Left side view
-        (270, 0),   # Right side view
-        (0, 90),    # Top view
-        (0, -90)    # Bottom view
-    ]
-    obj_path = '/Users/devindewilde/Documents/GitHub/UVA-CV2-Project/logs/baseline_ism/corgi.obj'  # Update with the path to your .obj file
-    os.makedirs('renders', exist_ok=True)
-    for idx, (azimuth, elevation) in enumerate(angles):
-        output_path = f'renders/render_{idx}.png'
-        render_model_at_angle(display, obj_path, azimuth, elevation, output_path)
-        print(f'Rendered image saved to {output_path}')
 
 if __name__ == "__main__":
-    main()
+
+    parser = argparse.ArgumentParser(description="Calculate CLIP similarity for rendered images from different angles and average the scores.")
+    parser.add_argument("directory", type=str, help="Path to the directory to save rendered images.")
+    parser.add_argument("obj_path", type=str, help="Path to the .obj file to render.")
+    args = parser.parse_args()
+
+    renderer = Renderer()
+    cam = MiniCam()
+    options = {
+            'min_ver': -30,
+            'max_ver': 30,
+            'elevation': 0,
+            'radius': 10,
+            'render_resolution': 256,
+            'invert_bg_prob': 0.1,
+            'batch_size': 10
+        }
+    
+    images, _ = render_images(renderer, cam, args.obj_path, options)
+
+    for idx, image_tensor in enumerate(images):
+        image_path = os.path.join(args.directory, f'rendered_{idx}.png')
+        image = Image.fromarray((image_tensor.squeeze().cpu().numpy().transpose(1, 2, 0) * 255).astype(np.uint8))
+        image.save(image_path)
