@@ -1,20 +1,25 @@
 models = ["MV"]
-loss_fn1 = ["SDS"]
+loss_fn1 = ["ISM"]
 loss_fn2 = ["MSE"]
-shap = [True]
+shap = [False]
+
 prompts = [
-    # ("a chair", "a chair"),
-    ("a photo of a teapot", "a teapot"),
-    ("a high-quality 4k picture of a dark horse", "a horse"),
-    # ("a pair of sunglasses", "a pair of sunglasses"),
-    ("A DSLR photo of a fast red sportscar", "a sportcar"),
-    # ("Two cars racing on a race track", "a racetrack"),
-    # ("An 8K picture of a delicious ice corn", "An ice corn"),
-    # ("A shark jumping", "a shark"),
-    # ("A shark attacking a fishers boat","A shark attacking a fishers boat"),
-    # ("A DSLR photo of a monkey and a dinosaur playing chess", "a monkey and a dinosaur playing chess"),
-    # ("A wooden bench in a park full of trees", "a park"),
-    # ("A man fishing in the pond with a large fountain", "a fountain"),
+    ("a high-quality photo realistic render of a chair", "a chair"),
+    ("a 4k photo of a white teapot", "a teapot"),
+    ("a high-quality 4k picture of a brown horse", "a horse"),
+    ("a pair of sunglasses", "a pair of sunglasses"),
+    ("A DSLR photo of a fast red sportscar", "a sportscar"),
+    (
+        "An 8K picture of a delicious ice corn with vanilla and chocolade ice",
+        "An ice corn",
+    ),
+    ("A realistic shark jumping out of the water", "a shark"),
+    (
+        "A shark attacking a fisher's boat in 4k with high realism",
+        "A shark attacking a fisher's boat",
+    ),
+    ("An open laptop playing a video of a dancing man", "An open laptop"),
+    ("A true to life 8k corgi dog", "A dog"),
 ]
 
 count = 0
@@ -29,13 +34,6 @@ for prompt, shap_txt in prompts:
                     cmd2 = (
                         f'python main2.py --config configs/text.yaml prompt="{prompt}"'
                     )
-                    if stage1 == "ISM" or stage2 == "ISM":
-                        cmd1 = cmd1.replace(
-                            "configs/text.yaml", "configs/text_ism.yaml"
-                        )
-                        cmd2 = cmd2.replace(
-                            "configs/text.yaml", "configs/text_ism.yaml"
-                        )
                     if model == "MV":
                         cmd1 += f" mvdream=True"
                         cmd2 += f" mvdream=True"

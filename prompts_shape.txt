@@ -1,0 +1,29 @@
+python main.py --config configs/text.yaml prompt="a high-quality photo realistic render of a chair" mvdream=True point_e="SHAPE_a chair" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=a_high-quality_photo_realistic_render_of_a_chair
+python main2.py --config configs/text.yaml prompt="a high-quality photo realistic render of a chair" mvdream=True point_e="SHAPE_a chair" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=a_high-quality_photo_realistic_render_of_a_chair
+
+python main.py --config configs/text.yaml prompt="a 4k photo of a white teapot" mvdream=True point_e="SHAPE_a teapot" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=a_4k_photo_of_a_white_teapot
+python main2.py --config configs/text.yaml prompt="a 4k photo of a white teapot" mvdream=True point_e="SHAPE_a teapot" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=a_4k_photo_of_a_white_teapot
+
+python main.py --config configs/text.yaml prompt="a high-quality 4k picture of a brown horse" mvdream=True point_e="SHAPE_a horse" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=a_high-quality_4k_picture_of_a_brown_horse
+python main2.py --config configs/text.yaml prompt="a high-quality 4k picture of a brown horse" mvdream=True point_e="SHAPE_a horse" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=a_high-quality_4k_picture_of_a_brown_horse
+
+python main.py --config configs/text.yaml prompt="a pair of sunglasses" mvdream=True point_e="SHAPE_a pair of sunglasses" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=a_pair_of_sunglasses
+python main2.py --config configs/text.yaml prompt="a pair of sunglasses" mvdream=True point_e="SHAPE_a pair of sunglasses" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=a_pair_of_sunglasses
+
+python main.py --config configs/text.yaml prompt="A DSLR photo of a fast red sportscar" mvdream=True point_e="SHAPE_a sportscar" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=A_DSLR_photo_of_a_fast_red_sportscar
+python main2.py --config configs/text.yaml prompt="A DSLR photo of a fast red sportscar" mvdream=True point_e="SHAPE_a sportscar" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=A_DSLR_photo_of_a_fast_red_sportscar
+
+python main.py --config configs/text.yaml prompt="An 8K picture of a delicious ice corn with vanilla and chocolade ice" mvdream=True point_e="SHAPE_An ice corn" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=An_8K_picture_of_a_delicious_ice_corn_with_vanilla_and_chocolade_ice
+python main2.py --config configs/text.yaml prompt="An 8K picture of a delicious ice corn with vanilla and chocolade ice" mvdream=True point_e="SHAPE_An ice corn" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=An_8K_picture_of_a_delicious_ice_corn_with_vanilla_and_chocolade_ice
+
+python main.py --config configs/text.yaml prompt="A realistic shark jumping out of the water" mvdream=True point_e="SHAPE_a shark" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=A_realistic_shark_jumping_out_of_the_water
+python main2.py --config configs/text.yaml prompt="A realistic shark jumping out of the water" mvdream=True point_e="SHAPE_a shark" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=A_realistic_shark_jumping_out_of_the_water
+
+python main.py --config configs/text.yaml prompt="A shark attacking a fisher's boat in 4k with high realism" mvdream=True point_e="SHAPE_A shark attacking a fisher's boat" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=A_shark_attacking_a_fisher's_boat_in_4k_with_high_realism
+python main2.py --config configs/text.yaml prompt="A shark attacking a fisher's boat in 4k with high realism" mvdream=True point_e="SHAPE_A shark attacking a fisher's boat" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=A_shark_attacking_a_fisher's_boat_in_4k_with_high_realism
+
+python main.py --config configs/text.yaml prompt="An open laptop playing a video of a dancing man" mvdream=True point_e="SHAPE_An open laptop" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=An_open_laptop_playing_a_video_of_a_dancing_man
+python main2.py --config configs/text.yaml prompt="An open laptop playing a video of a dancing man" mvdream=True point_e="SHAPE_An open laptop" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=An_open_laptop_playing_a_video_of_a_dancing_man
+
+python main.py --config configs/text.yaml prompt="A true to life 8k corgi dog" mvdream=True point_e="SHAPE_A dog" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=A_true_to_life_8k_corgi_dog
+python main2.py --config configs/text.yaml prompt="A true to life 8k corgi dog" mvdream=True point_e="SHAPE_A dog" stage1="SDS" stage2="MSE" outdir=logs/MV_st1_SDS_st2_MSE_shape_True save_path=A_true_to_life_8k_corgi_dog

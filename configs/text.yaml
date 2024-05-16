@@ -104,14 +104,6 @@ densification_interval: 50
 opacity_reset_interval: 700
 densify_grad_threshold: 0.01
 
-# # ISM
-# percent_dense: 0.003
-# density_start_iter: 100
-# density_end_iter: 300 
-# densification_interval: 100
-# opacity_reset_interval: 300
-# densify_grad_threshold: 0.00075
-
 ### Textured Mesh
 geom_lr: 0.0001
 texture_lr: 0.2
