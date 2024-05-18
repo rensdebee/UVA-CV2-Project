@@ -947,6 +947,7 @@ class Renderer:
                 self.gaussians.create_from_pcd(pcd, 2)
             else:
                 print(f"Init from POINT-E: {input}")
+                num_points = num_pts
                 xyz, rgb = init_from_pointe(input)
 
                 x, y, z = np.split(xyz, 3, axis=-1)

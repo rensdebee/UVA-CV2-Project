@@ -1,5 +1,5 @@
-models = ["MV"]
-loss_fn1 = ["ISM"]
+models = ["SD"]
+loss_fn1 = ["SDS"]
 loss_fn2 = ["MSE"]
 shap = [False]
 
@@ -15,8 +15,8 @@ prompts = [
     ),
     ("A realistic shark jumping out of the water", "a shark"),
     (
-        "A shark attacking a fisher's boat in 4k with high realism",
-        "A shark attacking a fisher's boat",
+        "A shark attacking a fishers boat in 4k with high realism",
+        "A shark attacking a fishers boat",
     ),
     ("An open laptop playing a video of a dancing man", "An open laptop"),
     ("A true to life 8k corgi dog", "A dog"),
