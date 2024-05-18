@@ -971,11 +971,7 @@ class Renderer:
                     points=xyz, colors=SH2RGB(shs), normals=np.zeros((num_pts, 3))
                 )
                 num_pts = xyz.shape[0]
-
-                shs = np.random.random((num_pts, 3)) / 255.0
-                pcd = BasicPointCloud(
-                    points=xyz, colors=SH2RGB(shs), normals=np.zeros((num_pts, 3))
-                )
+                
                 self.gaussians.create_from_pcd(pcd, 2)
         else:
             print("Init from saved PLY")
