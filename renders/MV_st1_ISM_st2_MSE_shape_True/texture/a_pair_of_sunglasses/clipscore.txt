@@ -1,0 +1,5 @@
+Processed frame_60.jpg: score = 0.2977173626422882
+Processed frame_0.jpg: score = 0.2917502224445343
+Processed frame_30.jpg: score = 0.2917942702770233
+Processed frame_90.jpg: score = 0.270059198141098
+CLIP similarity score: 0.28783026337623596
