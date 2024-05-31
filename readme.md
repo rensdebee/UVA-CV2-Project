@@ -5,7 +5,7 @@ This repository contains a refined version of [DreamGaussian: Generative Gaussia
 Improvements made:
 * Point-E / Shap-E Initialization option
 * MVdream / Stable diffusion V2.1 ISM loss implemented
-* MSE + ISM loss implemented for stage 2 texture optimization
+* SDS + ISM loss implemented for stage 2 texture optimization
 
 ## Example video: 
 [![Example](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fyoutu.be%2FrgkWRRVUFQE)](https://youtu.be/rgkWRRVUFQE)
