@@ -1,8 +1,14 @@
 # DreamGaussian
 
-This repository contains a refined version of [DreamGaussian: Generative Gaussian Splatting for Efficient 3D Content Creation](https://arxiv.org/abs/2309.16653), improving the text-to-3D pipeline
+This repository contains a refined version of [DreamGaussian: Generative Gaussian Splatting for Efficient 3D Content Creation](https://arxiv.org/abs/2309.16653), improving the text-to-3D pipeline.
 
-### [Project Page](https://dreamgaussian.github.io) | [Arxiv](https://arxiv.org/abs/2309.16653)
+Improvements made:
+* Point-E / Shap-E Initialization option
+* MVdream / Stable diffusion V2.1 ISM loss implemented
+* MSE + ISM loss implemented for stage 2 texture optimization
+
+## Example video: 
+[![Example](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fyoutu.be%2FrgkWRRVUFQE)](https://youtu.be/rgkWRRVUFQE)
 
 
 ## Install
@@ -23,11 +29,9 @@ pip install git+https://github.com/NVlabs/nvdiffrast/
 # kiuikit
 pip install git+https://github.com/ashawkey/kiuikit
 
-# To use MVdream, also install:
+# MVdream:
 pip install git+https://github.com/bytedance/MVDream
 
-# To use ImageDream, also install:
-pip install git+https://github.com/bytedance/ImageDream/#subdirectory=extern/ImageDream
 ```
 
 Tested on:
@@ -37,7 +41,22 @@ Tested on:
 
 ## Usage
 
-I
+```bash
+# Remove # comments before running
+python main.py --config configs/text.yaml \ # Config file with hyper parameters
+ prompt="<prompt>" \ # Prompt to create 3D object from
+ point_e="<prompt>" \ # Prompt to intialize Point-E, use "SHAPE_<prompt>" to use Shap-E, remove to use random init
+ mvdream=True \ # Boolean indicatin to use MVdream diffusion model, False uses Stable Diffusion V2.1
+ stage1="SDS" \ # Stage 1 loss choose from MSE, SDS, ISM
+ stage2="MSE" \ # Stage 2 loss choose from MSE, SDS, ISM
+ outdir=<path> # Path to store object files
+```
+
+```bash
+# export all ./logs/*.obj to mp4 in ./videos
+python scripts/convert_obj_to_video.py --dir ./logs
+```
+
 ## Acknowledgement
 
 This work is built on many amazing research works and open-source projects, thanks a lot to all the authors for sharing!
