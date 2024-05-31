@@ -1,6 +1,6 @@
 # DreamGaussian
 
-This repository contains a refined version of [DreamGaussian: Generative Gaussian Splatting for Efficient 3D Content Creation](https://arxiv.org/abs/2309.16653), improving the text-to-3D pipeline.
+This repository contains a refined version of [DreamGaussian: Generative Gaussian Splatting for Efficient 3D Content Creation](https://arxiv.org/abs/2309.16653), focussing on improving the text-to-3D pipeline.
 
 Improvements made:
 * Point-E / Shap-E Initialization option
