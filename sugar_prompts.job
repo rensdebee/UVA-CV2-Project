@@ -1,0 +1,18 @@
+#!/bin/bash
+#SBATCH --partition=gpu
+#SBATCH --gpus-per-node=1
+#SBATCH --job-name=sugar
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=18
+#SBATCH --time=01:59:00
+#SBATCH --output=sugar_log_%A.out
+
+ module load 2022 CUDA/11.7.0 GCC/11.3.0
+
+ source my_env/bin/activate
+
+python main.py --config configs/text.yaml prompt="A DSLR photo of a fast red sportscar" \
+    mvdream=True point_e="SHAPE_a sportscar" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=A_DSLR_photo_of_a_fast_red_sportscar
+python sugar/run_sugar.py --gs_path A_DSLR_photo_of_a_fast_red_sportscar.ply \
+    --prompt "A DSLR photo of a fast red sportscar" -c depth -n sportscar --resume
