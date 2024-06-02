@@ -542,11 +542,8 @@ class GUI:
 
         else:
             path = os.path.join(self.opt.outdir, self.opt.save_path + '_model.ply')
-            sugar_path = "sugar/logs/" + path
-            os.makedirs("sugar/logs/" + self.opt.outdir, exist_ok=True)
             self.renderer.gaussians.save_ply(path)
-            self.renderer.gaussians.save_ply(sugar_path)
-            print(f"If you are using SuGaR to refine the gaussians, consder copying the following path: {sugar_path}")
+
 
         print(f"[INFO] save model to {path}.")
 

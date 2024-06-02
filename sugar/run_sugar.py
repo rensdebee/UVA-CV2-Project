@@ -1,5 +1,6 @@
 import os
 import glob
+import shutil
 import argparse
 import numpy as np
 
@@ -9,6 +10,7 @@ def find_latest_path(paths):
     idx = np.argmax(nums)
     latest_path = paths[idx]
     return latest_path
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -36,6 +38,10 @@ if __name__ == "__main__":
     
     
     args = parser.parse_args()
+    
+    shutil.copytree('logs', 'sugar/logs', dirs_exist_ok=True)
+    
+    os.chdir('sugar')
 
     # Setup
     asset_name = args.asset_name
@@ -45,18 +51,13 @@ if __name__ == "__main__":
     exp_root_dir = f"workspace/mvcontrol_{condition_type}"
 
     if not args.gs_path:
-        args.gs_path = args.prompt.lower().replace(" ", "_") + ".ply"
-
-    for f in glob("sugar/logs/*/*.ply", recursive=True):
-        if "args.gs_path" in f:
+        args.gs_path = args.prompt.lower().replace(" ", "_") + "_model.ply"
+    for f in glob.glob("logs/*/*.ply", recursive=True):
+        if args.gs_path in f:
             coarse_gs_path = f
-    
     assert os.path.exists(coarse_gs_path), f"The coarse gaussian of path '{coarse_gs_path}' do not exist!"
-    
-    os.chdir('sugar')
-    
+    print('Using coarse gs: ', coarse_gs_path)
     directory = os.path.join(exp_root_dir, asset_name)
-    print(directory)
     if args.resume and os.path.isdir(directory):
         print("Resuming from stage 2 refined gaussians")
         pass
