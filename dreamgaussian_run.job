@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#SBATCH --partition=gpu
+#SBATCH --gpus-per-node=1
+#SBATCH --job-name=gaussiandreamer_run
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=18
+#SBATCH --time=00:05:00
+#SBATCH --output=run_log.out
+
+# load modules
+
+# general module, other modules require this
+module load 2022
+
+# load python module for creating virtual environment
+module load IPython/8.5.0-GCCcore-11.3.0 
+
+# load CUDA toolkit, required for some package builds
+module load CUDA/11.7.0
+
+# load GCC compiler with required version
+module load GCC/11.3.0
+
+# activate the environment
+source dreamgaussian_env/bin/activate
+
+python render_images.py

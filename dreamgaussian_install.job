@@ -1,0 +1,63 @@
+#!/bin/bash
+
+#SBATCH --partition=gpu
+#SBATCH --gpus-per-node=1
+#SBATCH --job-name=gaussiandreamer
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=18
+#SBATCH --time=00:59:00
+#SBATCH --output=install_log.out
+
+
+# load modules
+
+# general module, other modules require this
+module load 2022
+
+# load python module for creating virtual environment
+module load IPython/8.5.0-GCCcore-11.3.0 
+
+# load CUDA toolkit, required for some package builds
+module load CUDA/11.7.0
+
+# load GCC compiler with required version
+module load GCC/11.3.0
+
+
+# note that, this installs CUDA version 11.7.0, thus packages that require
+# a specific version (i.e. torch) will need to install a version that matches the 
+# CUDA toolkit. Likewise, this script installs Python version 3.10.4
+# If a newer version of CUDA or Python is required, use the following commands instead:
+# module load 2023
+# module load IPython/8.14.0-GCCcore-12.3.0
+# module load CUDA/12.1.1
+
+# create virtual environment
+virtualenv dreamgaussian_env
+
+# activate the environment
+source dreamgaussian_env/bin/activate
+
+# install required Python packages
+
+# remaining requirements
+pip install -r requirements.txt
+
+# torch 2.0.1, assuming you use CUDA 11.7.0 toolkit
+pip install torch==2.0.1+cu117 torchvision==0.15.2+cu117 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu117
+
+# install a modified gaussian splatting (+ depth, alpha rendering) submodule
+git clone --recursive https://github.com/ashawkey/diff-gaussian-rasterization
+pip install ./diff-gaussian-rasterization
+
+# nvdiffrast
+pip install git+https://github.com/NVlabs/nvdiffrast/
+
+# kiuikit
+pip install git+https://github.com/ashawkey/kiuikit
+
+# note that this will install the newest torch version, so we have to downgrade again
+pip install torch==2.0.1+cu117 torchvision==0.15.2+cu117 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu117
+
+# To use MVdream, also install:
+pip install git+https://github.com/bytedance/MVDream

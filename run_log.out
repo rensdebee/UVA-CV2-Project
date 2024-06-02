@@ -1,0 +1,41 @@
+[load_obj] use texture from: /home/scur2155/CV2/UVA-CV2-Project/sugar_output/results_car/extracted_mesh.png
+[load_obj] load texture: (840, 840, 3)
+[Mesh loading] v: torch.Size([6910, 3]), f: torch.Size([13816, 3])
+[Mesh loading] vn: torch.Size([6910, 3]), fn: torch.Size([13816, 3])
+[load_obj] use texture from: /home/scur2155/CV2/UVA-CV2-Project/sugar_output/results_car/extracted_mesh.png
+[load_obj] load texture: (840, 840, 3)
+[Mesh loading] v: torch.Size([6910, 3]), f: torch.Size([13816, 3])
+[Mesh loading] vn: torch.Size([6910, 3]), fn: torch.Size([13816, 3])
+Traceback (most recent call last):
+  File "/gpfs/home3/scur2155/CV2/UVA-CV2-Project/render_images.py", line 53, in <module>
+    main()
+  File "/gpfs/home3/scur2155/CV2/UVA-CV2-Project/render_images.py", line 45, in main
+    result = renderer.render(pose, proj, 800, 800, ssaa=1)
+  File "/gpfs/home3/scur2155/CV2/UVA-CV2-Project/mesh_renderer.py", line 110, in render
+    albedo = dr.texture(self.raw_albedo.unsqueeze(0), texc, uv_da=texc_db, filter_mode=texture_filter) # [1, H, W, 3]
+  File "/gpfs/home3/scur2155/CV2/UVA-CV2-Project/dreamgaussian_env/lib/python3.10/site-packages/nvdiffrast/torch/ops.py", line 609, in texture
+    mip_wrapper = _get_plugin().texture_construct_mip(tex, max_mip_level, boundary_mode == 'cube')
+RuntimeError: Mip-map size error - cannot downsample an odd extent greater than 1. Resize the texture so that both spatial extents are powers of two, or limit the number of mip maps using max_mip_level argument.
+Attempted mip stack construction:
+level  width height
+-----  ----- ------
+base     840    840
+mip 1    420    420
+mip 2    210    210
+mip 3    105    105
+mip 4    err    err
+
+
+JOB STATISTICS
+==============
+Job ID: 6466869
+Cluster: snellius
+User/Group: scur2155/scur2155
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 18
+CPU Utilized: 00:04:21
+CPU Efficiency: 21.01% of 00:20:42 core-walltime
+Job Wall-clock time: 00:01:09
+Memory Utilized: 5.70 GB
+Memory Efficiency: 4.75% of 120.00 GB
