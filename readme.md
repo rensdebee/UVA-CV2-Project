@@ -32,17 +32,23 @@ pip install git+https://github.com/ashawkey/kiuikit
 # MVdream:
 pip install git+https://github.com/bytedance/MVDream
 
+# To use SuGaR, install the following:
+pip install -r requirements_sugar.txt
+
 ```
 
 Tested on:
 
 - Ubuntu 22 with torch 1.12 & CUDA 11.6 on a V100.
 - Windows 10 with torch 2.1 & CUDA 12.1 on a 3070.
+- Red Hat 8.6 with torch 2.01 & CUDA 11.7 on a A100 (Snellius HPC).
 
 ## Usage
 
 ```bash
 # Remove # comments before running
+
+# Step 1
 python main.py --config configs/text.yaml \ # Config file with hyper parameters
  prompt="<prompt>" \ # Prompt to create 3D object from
  point_e="<prompt>" \ # Prompt to intialize Point-E, use "SHAPE_<prompt>" to use Shap-E, remove to use random init
@@ -50,6 +56,22 @@ python main.py --config configs/text.yaml \ # Config file with hyper parameters
  stage1="SDS" \ # Stage 1 loss choose from MSE, SDS, ISM
  stage2="MSE" \ # Stage 2 loss choose from MSE, SDS, ISM
  outdir=<path> # Path to store object files
+ 
+# Step 2
+python main2.py --config configs/text.yaml \ # Config file with hyper parameters
+ prompt="<prompt>" \ # Prompt to create 3D object from
+ point_e="<prompt>" \ # Prompt to intialize Point-E, use "SHAPE_<prompt>" to use Shap-E, remove to use random init
+ mvdream=True \ # Boolean indicatin to use MVdream diffusion model, False uses Stable Diffusion V2.1
+ stage1="SDS" \ # Stage 1 loss choose from MSE, SDS, ISM
+ stage2="MSE" \ # Stage 2 loss choose from MSE, SDS, ISM
+ outdir=<path> # Path to store object files
+ 
+ # Alternatively, step 2 with SuGaR refinement
+ python sugar/run_sugar.py \
+ --prompt "<prompt>"  \ 
+ -c depth \ # condition type, depth used for this project
+ -n {name} \ # project name, creates a directory using this name
+ --resume # resumes a crashed step 2 attempt if available
 ```
 
 ```bash
@@ -65,3 +87,6 @@ This work is built on many amazing research works and open-source projects, than
 - [threestudio](https://github.com/threestudio-project/threestudio)
 - [nvdiffrast](https://github.com/NVlabs/nvdiffrast)
 - [dearpygui](https://github.com/hoffstadt/DearPyGui)
+
+The SuGaR implementation is largely adapted from the amazing official implementation of [Controllable Text-to-3D Generation via Surface-Aligned Gaussian Splatting](https://arxiv.org/abs/2403.09981).
+The GitHub repository can be found [here](https://github.com/WU-CVGL/MVControl-threestudio).

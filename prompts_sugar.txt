@@ -1,0 +1,69 @@
+# Chair
+python main.py --config configs/text.yaml prompt="a high-quality photo realistic render of a chair" \
+    mvdream=True point_e="SHAPE_a chair" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=a_high-quality_photo_realistic_render_of_a_chair 
+python sugar/run_sugar.py --gs_path a_high-quality_photo_realistic_render_of_a_chair_model.ply \
+    --prompt "a high-quality photo realistic render of a chair" -c depth -n chair --resume
+
+# Teapot
+python main.py --config configs/text.yaml prompt="a 4k photo of a white teapot" \
+    mvdream=True point_e="SHAPE_a teapot" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=a_4k_photo_of_a_white_teapot
+python sugar/run_sugar.py --gs_path a_4k_photo_of_a_white_teapot_model.ply --prompt "a 4k photo of a white teapot" \
+    -c depth -n teapot --resume
+
+# Horse
+python main.py --config configs/text.yaml prompt="a high-quality 4k picture of a brown horse" \
+    mvdream=True point_e="SHAPE_a horse" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=a_high-quality_4k_picture_of_a_brown_horse
+python sugar/run_sugar.py --gs_path a_high-quality_4k_picture_of_a_brown_horse_model.ply \
+    --prompt "a high-quality 4k picture of a brown horse" -c depth -n horse --resume
+
+# Sunglasses
+python main.py --config configs/text.yaml prompt="a pair of sunglasses" \
+    mvdream=True point_e="SHAPE_a pair of sunglasses" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=a_pair_of_sunglasses
+python sugar/run_sugar.py --gs_path a_pair_of_sunglasses_model.ply --prompt "a pair of sunglasses" \
+    -c depth -n sunglasses --resume
+
+# Sportscar
+python main.py --config configs/text.yaml prompt="A DSLR photo of a fast red sportscar" \
+    mvdream=True point_e="SHAPE_a sportscar" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=A_DSLR_photo_of_a_fast_red_sportscar
+python sugar/run_sugar.py --gs_path A_DSLR_photo_of_a_fast_red_sportscar_model.ply \
+    --prompt "A DSLR photo of a fast red sportscar" -c depth -n sportscar --resume
+
+# Ice Cream Cone
+python main.py --config configs/text.yaml prompt="An 8K picture of a delicious ice corn with vanilla and chocolade ice" \
+    mvdream=True point_e="SHAPE_An ice corn" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=An_8K_picture_of_a_delicious_ice_corn_with_vanilla_and_chocolade_ice
+python sugar/run_sugar.py --gs_path An_8K_picture_of_a_delicious_ice_corn_with_vanilla_and_chocolade_ice_model.ply \
+    --prompt "An 8K picture of a delicious ice corn with vanilla and chocolade ice" -c depth -n ice_corn --resume
+
+# Shark Jumping
+python main.py --config configs/text.yaml prompt="A realistic shark jumping out of the water" \
+    mvdream=True point_e="SHAPE_a shark" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=A_realistic_shark_jumping_out_of_the_water
+python sugar/run_sugar.py --gs_path A_realistic_shark_jumping_out_of_the_water_model.ply \
+    --prompt "A realistic shark jumping out of the water" -c depth -n shark --resume
+
+# Shark Attacking
+python main.py --config configs/text.yaml prompt="A shark attacking a fisher's boat in 4k with high realism" \
+    mvdream=True point_e="SHAPE_A shark attacking a fisher's boat" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=A_shark_attacking_a_fisher's_boat_in_4k_with_high_realism
+python sugar/run_sugar.py --gs_path A_shark_attacking_a_fisher's_boat_in_4k_with_high_realism_model.ply \
+    --prompt "A shark attacking a fisher's boat in 4k with high realism" -c depth -n shark_boat --resume
+
+# Laptop
+python main.py --config configs/text.yaml prompt="An open laptop playing a video of a dancing man" \
+    mvdream=True point_e="SHAPE_An open laptop" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=An_open_laptop_playing_a_video_of_a_dancing_man
+python sugar/run_sugar.py --gs_path An_open_laptop_playing_a_video_of_a_dancing_man_model.ply \
+    --prompt "An open laptop playing a video of a dancing man" -c depth -n laptop --resume
+
+# Corgi Dog
+python main.py --config configs/text.yaml prompt="A true to life 8k corgi dog" \
+    mvdream=True point_e="SHAPE_A dog" stage1="ISM" stage2="MSE" \
+    outdir=logs/MV_st1_ISM_st2_MSE_shape_True save_path=A_true_to_life_8k_corgi_dog      
+python sugar/run_sugar.py --gs_path A_true_to_life_8k_corgi_dog_model.ply --prompt "A true to life 8k corgi dog" \
+    -c depth -n corgi_dog --resume

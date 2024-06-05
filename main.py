@@ -544,6 +544,7 @@ class GUI:
             path = os.path.join(self.opt.outdir, self.opt.save_path + '_model.ply')
             self.renderer.gaussians.save_ply(path)
 
+
         print(f"[INFO] save model to {path}.")
 
     def register_dpg(self):

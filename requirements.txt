@@ -1,23 +1,29 @@
 tqdm
+tyro
 rich
 ninja
 numpy
 pandas
 scipy
+scikit-image
 scikit-learn
 matplotlib
 opencv-python
 imageio
 imageio-ffmpeg
 omegaconf
+lpips
 mediapipe
+packaging
 Pillow
 fire
 PyYAML
+roma
 safetensors
 wandb
 triton #Disable on windows
 xformers
+easydict
 
 # torch
 einops
@@ -48,3 +54,7 @@ gradio
 ipywidgets
 blobfile
 git+https://github.com/openai/point-e.git
+
+# sugar
+open3d
+git+https://github.com/facebookresearch/pytorch3d.git@stable
