@@ -1,6 +1,14 @@
 # DreamGaussian
 
-This repository contains the unofficial implementation for [DreamGaussian: Generative Gaussian Splatting for Efficient 3D Content Creation](https://arxiv.org/abs/2309.16653).
+This repository contains a refined version of [DreamGaussian: Generative Gaussian Splatting for Efficient 3D Content Creation](https://arxiv.org/abs/2309.16653), focussing on improving the text-to-3D pipeline.
+
+Improvements made:
+* Point-E / Shap-E Initialization option
+* MVdream / Stable diffusion V2.1 ISM loss implemented
+* SDS + ISM loss implemented for stage 2 texture optimization
+
+## Example video: 
+[![Example](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fyoutu.be%2FrgkWRRVUFQE)](https://youtu.be/rgkWRRVUFQE)
 
 
 ## Install
@@ -21,11 +29,12 @@ pip install git+https://github.com/NVlabs/nvdiffrast/
 # kiuikit
 pip install git+https://github.com/ashawkey/kiuikit
 
-# To use MVdream, also install:
+# MVdream:
 pip install git+https://github.com/bytedance/MVDream
 
 # To use SuGaR, install the following:
 pip install -r requirements_sugar.txt
+
 ```
 
 Tested on:
@@ -35,59 +44,39 @@ Tested on:
 - Red Hat 8.6 with torch 2.01 & CUDA 11.7 on a A100 (Snellius HPC).
 
 ## Usage
-Text-to-3D:
 
 ```bash
-### training gaussian stage
-python main.py --config configs/text.yaml prompt="a photo of an icecream" save_path=icecream
+# Remove # comments before running
 
-### training mesh stage
-python main2.py --config configs/text.yaml prompt="a photo of an icecream" save_path=icecream
-
-### refining gaussians with SuGaR
-python sugar/run_sugar.py --prompt {prompt} -c depth -n {name} --resume
+# Step 1
+python main.py --config configs/text.yaml \ # Config file with hyper parameters
+ prompt="<prompt>" \ # Prompt to create 3D object from
+ point_e="<prompt>" \ # Prompt to intialize Point-E, use "SHAPE_<prompt>" to use Shap-E, remove to use random init
+ mvdream=True \ # Boolean indicatin to use MVdream diffusion model, False uses Stable Diffusion V2.1
+ stage1="SDS" \ # Stage 1 loss choose from MSE, SDS, ISM
+ stage2="MSE" \ # Stage 2 loss choose from MSE, SDS, ISM
+ outdir=<path> # Path to store object files
+ 
+# Step 2
+python main2.py --config configs/text.yaml \ # Config file with hyper parameters
+ prompt="<prompt>" \ # Prompt to create 3D object from
+ point_e="<prompt>" \ # Prompt to intialize Point-E, use "SHAPE_<prompt>" to use Shap-E, remove to use random init
+ mvdream=True \ # Boolean indicatin to use MVdream diffusion model, False uses Stable Diffusion V2.1
+ stage1="SDS" \ # Stage 1 loss choose from MSE, SDS, ISM
+ stage2="MSE" \ # Stage 2 loss choose from MSE, SDS, ISM
+ outdir=<path> # Path to store object files
+ 
+ # Alternatively, step 2 with SuGaR refinement
+ python sugar/run_sugar.py \
+ --prompt "<prompt>"  \ 
+ -c depth \ # condition type, depth used for this project
+ -n {name} \ # project name, creates a directory using this name
+ --resume # resumes a crashed step 2 attempt if available
 ```
 
-Please check `./configs/text.yaml` for more options.
-
-
-Helper scripts:
-
 ```bash
-# run all image samples (*_rgba.png) in ./data
-python scripts/runall.py --dir ./data --gpu 0
-
-# run all text samples (hardcoded in runall_sd.py)
-python scripts/runall_sd.py --gpu 0
-
 # export all ./logs/*.obj to mp4 in ./videos
 python scripts/convert_obj_to_video.py --dir ./logs
-```
-
-## Tips
-* The world & camera coordinate system is the same as OpenGL:
-```
-    World            Camera        
-  
-     +y              up  target                                              
-     |               |  /                                            
-     |               | /                                                
-     |______+x       |/______right                                      
-    /                /         
-   /                /          
-  /                /           
- +z               forward           
-
-elevation: in (-90, 90), from +y to -y is (-90, 90)
-azimuth: in (-180, 180), from +z to +x is (0, 90)
-```
-
-* Trouble shooting OpenGL errors (e.g., `[F glutil.cpp:338] eglInitialize() failed`): 
-```bash
-# either try to install OpenGL correctly (usually installed with the Nvidia driver), or use force_cuda_rast:
-python main.py --config configs/image_sai.yaml input=data/name_rgba.png save_path=name force_cuda_rast=True
-
-kire mesh.obj --force_cuda_rast
 ```
 
 ## Acknowledgement
@@ -99,13 +88,5 @@ This work is built on many amazing research works and open-source projects, than
 - [nvdiffrast](https://github.com/NVlabs/nvdiffrast)
 - [dearpygui](https://github.com/hoffstadt/DearPyGui)
 
-## Citation
-
-```
-@article{tang2023dreamgaussian,
-  title={DreamGaussian: Generative Gaussian Splatting for Efficient 3D Content Creation},
-  author={Tang, Jiaxiang and Ren, Jiawei and Zhou, Hang and Liu, Ziwei and Zeng, Gang},
-  journal={arXiv preprint arXiv:2309.16653},
-  year={2023}
-}
-```
+The SuGaR implementation is largely adapted from the amazing official implementation of [Controllable Text-to-3D Generation via Surface-Aligned Gaussian Splatting](https://arxiv.org/abs/2403.09981).
+The GitHub repository can be found [here](https://github.com/WU-CVGL/MVControl-threestudio).
